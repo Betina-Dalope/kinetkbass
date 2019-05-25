@@ -1,0 +1,23 @@
+.kinetk {
+    font-size: 50px;
+    height: 50px;
+    width: 200px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    .k {
+      background-color: white;
+      height: 100%;
+      width: 2px;
+      position: absolute;
+
+      &.k1 {
+		left: 0;
+	  }
+	  &.k2 {
+		  right: 0;
+		  bottom: 0;
+	  }
+    }
+  }

@@ -1,0 +1,22 @@
+html, body {
+  background-color: black;
+  color: white; }
+
+.kinetk {
+  font-size: 50px;
+  height: 50px;
+  width: 200px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); }
+  .kinetk .k {
+    background-color: white;
+    height: 100%;
+    width: 2px;
+    position: absolute; }
+    .kinetk .k.k1 {
+      left: 0; }
+    .kinetk .k.k2 {
+      right: 0;
+      bottom: 0; }
