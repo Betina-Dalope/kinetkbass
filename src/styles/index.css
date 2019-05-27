@@ -1,22 +1,49 @@
 html, body {
   background-color: black;
-  color: white; }
+  color: white;
+  font-family: "Helvetica Neue";
+  font-weight: 100; }
 
 .kinetk {
-  font-size: 50px;
+  font-size: 66px;
+  line-height: .8;
   height: 50px;
-  width: 200px;
+  width: 184px;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%); }
   .kinetk .k {
-    background-color: white;
     height: 100%;
-    width: 2px;
-    position: absolute; }
+    width: 50px;
+    position: absolute;
+    overflow: hidden; }
+    .kinetk .k .k__arrow {
+      border-left: 2px solid white;
+      border-bottom: 2px solid white;
+      height: 32px;
+      width: 32px;
+      position: absolute; }
     .kinetk .k.k1 {
-      left: 0; }
+      left: 0;
+      border-left: 2px solid white; }
+      .kinetk .k.k1 .k__arrow {
+        top: 8px;
+        left: 8px;
+        transform: rotate(45deg); }
     .kinetk .k.k2 {
       right: 0;
-      bottom: 0; }
+      bottom: 0;
+      border-right: 2px solid white; }
+      .kinetk .k.k2 .k__arrow {
+        right: 8px;
+        bottom: 8px;
+        transform: rotate(-135deg); }
+  .kinetk .middle-letters {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    width: 184px;
+    text-align: center; }

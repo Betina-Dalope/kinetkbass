@@ -1,23 +1,61 @@
 .kinetk {
-    font-size: 50px;
+		font-size: 66px;
+		line-height: .8;
     height: 50px;
-    width: 200px;
+    width: 184px;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     .k {
-      background-color: white;
+	  //background-color: white;
       height: 100%;
-      width: 2px;
-      position: absolute;
+      width: 50px;
+	  position: absolute;
+	  overflow: hidden;
+	  
+	  .k__arrow {
+		  border-left: 2px solid white;
+		  border-bottom: 2px solid white;
+	
+		  height: 32px;
+		  width: 32px;
+		  
+		  position: absolute;
+		  
+	  }
 
-      &.k1 {
-		left: 0;
+    &.k1 {
+			left: 0;
+			border-left: 2px solid white;
+
+			.k__arrow {
+				top: 8px;
+				left: 8px;
+				transform: rotate(45deg);
+			}
 	  }
 	  &.k2 {
 		  right: 0;
 		  bottom: 0;
+		  border-right: 2px solid white;
+
+		  .k__arrow {
+				right: 8px;
+				bottom: 8px;
+				transform: rotate(-135deg);
+		  }
+
 	  }
-    }
+		}
+		
+		.middle-letters {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);			
+			overflow: hidden;
+			width: 184px;
+			text-align: center;
+		}
   }
