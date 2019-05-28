@@ -27,10 +27,13 @@ class Kinetk extends Component {
 
         this.kTimeline
             .from([this.refs.k1, this.refs.k2], .5, { height: 0, alpha: 0})
-            .add(this.drawArrow(), "grow")
-            .from( this.refs.component, 1, { width: 20 }, "grow") //using labels, you can run timeline layers at the same time
-            .from( this.refs.middle_letters, 1, { width: 0, alpha: 0, delay: ".3"}, "grow")
-            .to( this.refs.k2, .3, {rotationY: 180, transformOrigin:"right", x: -27} );
+            .add(this.drawArrow())
+            .from( this.refs.component, 1, { width: 40, delay: .6 }, "widen") //hold at this position until loaded
+            .from( this.refs.middle_letters, 1, { width: 0, alpha: 0, delay: 0.9}, "widen")
+            .to( this.refs.k2, .5, {rotationY: 180, transformOrigin:"right", x: -27},  "grow" )
+            .to( this.refs.component, 2.5, {scale: 1.5, y: -50}, "grow")
+            .to(this.refs.component, .25, { scale: 1, delay: .5}, "shrink")
+            .to(this.refs.component, .8, {left: "10%", top: "10%", delay: .5}, "shrink");
 
             this.kTimeline.play();
     }
