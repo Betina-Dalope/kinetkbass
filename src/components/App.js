@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Kinetk from './Kinetk';
+import PlatonicElement from './PlatonicElement';
 
 
 class App extends Component {
@@ -10,8 +11,14 @@ class App extends Component {
   render() {
 
     return (
-
-      <Kinetk></Kinetk>
+      <Fragment>
+        <Kinetk></Kinetk>
+        <PlatonicElement></PlatonicElement>
+        {/* <PlatonicElement></PlatonicElement>
+        <PlatonicElement></PlatonicElement>
+        <PlatonicElement></PlatonicElement> */}
+      </Fragment>
+      
       
       
     );
