@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
 
-class PlatonicElement extends Component {
+import Cube from '../three-js/cube.js';
+import Icosahedron from '../three-js/icosehadron';
+import Octahedron from '../three-js/octahedron';
+import Tetrahedron from '../three-js/tetrahedron';
 
+class PlatonicElement extends Component {
+    shapes = [];
     constructor(props) {
         super(props);
 
@@ -15,20 +20,23 @@ class PlatonicElement extends Component {
         this.renderer.setSize( this.width, this.height );
 
         this.camera.position.z = 10;
-        
-        //create cube
-        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
 
-        this.cube = new THREE.Mesh( geometry, material );
-        this.scene.add( this.cube );
+        this.shapes = [
+            new Cube(),
+            new Icosahedron(),
+            new Octahedron(),
+            new Tetrahedron()
+        ]
 
-        // create wireframe
-        var geo = new THREE.EdgesGeometry( this.cube.geometry );
-        var mat = new THREE.LineBasicMaterial( { color: 0x00ff00, linewidth: 4 } );
-        var wireframe = new THREE.LineSegments( geo, mat );
-        wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
-        this.cube.add( wireframe );
+        var x = -5;
+        for (var index in this.shapes) {
+            var shape = this.shapes[index].shape
+            shape.position.set(x, 0, 0)
+            this.scene.add( shape );
+
+            x = x + 3;
+        }
+
 
 
 
@@ -52,18 +60,21 @@ class PlatonicElement extends Component {
         this.mouseVector.y = 1 - 2 * ( e.clientY / this.height );
         this.raycaster.setFromCamera(this.mouseVector, this.camera);
 
-        var intersects = this.raycaster.intersectObjects([this.cube]);
+        for (var index in this.shapes) {
+            var intersects = this.raycaster.intersectObjects([this.shapes[index].shape]);
 
-        if (intersects.length > 0) //if mouse intersects the object
-            console.log(intersects)
+            if (intersects.length > 0) //if mouse intersects the object
+                console.log(intersects)
+        }
 
     }
 
     animate = () => {
         requestAnimationFrame( this.animate );
 
-        this.cube.rotation.x += 0.01;
-        this.cube.rotation.y += 0.01;
+        for (var index in this.shapes) {
+            this.shapes[index].animate();
+        }
         this.renderer.render( this.scene, this.camera );
     }
 
