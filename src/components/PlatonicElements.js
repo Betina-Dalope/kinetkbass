@@ -40,9 +40,8 @@ class PlatonicElement extends Component {
         var x = -5;
 
         this.forEachShape((shape) => {
-            var shape = shape.shape
-            shape.position.set(x, 0, 0)
-            this.scene.add( shape );
+            shape.entity.position.set(x, 0, 0)
+            this.scene.add( shape.entity );
 
             x = x + 3;            
         })
@@ -72,10 +71,12 @@ class PlatonicElement extends Component {
         this.raycaster.setFromCamera(this.mouseVector, this.camera);
 
         this.forEachShape((shape) => {
-            var intersects = this.raycaster.intersectObjects(shape.shape);
+            var intersects = this.raycaster.intersectObjects([shape.entity]);
 
             if (intersects.length > 0) //if mouse intersects the object
-                console.log(intersects)
+                shape.onHover();
+            else
+                shape.defaultAni();
         })
 
     }
@@ -89,8 +90,6 @@ class PlatonicElement extends Component {
 
     animate = () => {
         requestAnimationFrame( this.animate );
-
-        console.log(this);
         this.forEachShape((shape) => {
             shape.animate();
         })

@@ -6,7 +6,7 @@ export class Cube extends Shape {
         //create cube
         
         var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+        var material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
 
         var cube = new THREE.Mesh( geometry, material );;
 
