@@ -1,28 +1,28 @@
 import React, { Component, Fragment } from 'react';
 import Kinetk from './Kinetk';
-import PlatonicElement from './PlatonicElement';
+import PlatonicElements from './PlatonicElements';
 
 
 class App extends Component {
+	state = {
+		skip_title_screen: false
+	}
 
-  componentDidMount() {
-  }
+	componentDidMount() {
+	}
 
-  render() {
+	render() {
 
-    return (
-      <Fragment>
-        <Kinetk></Kinetk>
-        <PlatonicElement></PlatonicElement>
-        {/* <PlatonicElement></PlatonicElement>
-        <PlatonicElement></PlatonicElement>
-        <PlatonicElement></PlatonicElement> */}
-      </Fragment>
-      
-      
-      
-    );
-  }
+		return (
+			<Fragment>
+				<Kinetk></Kinetk>
+				<PlatonicElements></PlatonicElements>
+			</Fragment>
+
+
+
+		);
+	}
 }
 
 export default App;

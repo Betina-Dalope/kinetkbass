@@ -7,7 +7,14 @@ import Octahedron from '../three-js/octahedron';
 import Tetrahedron from '../three-js/tetrahedron';
 
 class PlatonicElement extends Component {
-    shapes = [];
+    state = {
+        shapes: [
+            { title: 'Cube', constructor: Cube },
+            { title: 'Icosahedron', constructor: Icosahedron },
+            { title: 'Octahedron', constructor: Octahedron },
+            { title: 'Tetrahedron', constructor: Tetrahedron }
+        ]
+    }
     constructor(props) {
         super(props);
 
@@ -21,21 +28,24 @@ class PlatonicElement extends Component {
 
         this.camera.position.z = 10;
 
-        this.shapes = [
-            new Cube(),
-            new Icosahedron(),
-            new Octahedron(),
-            new Tetrahedron()
-        ]
+        // Create 3.js objects from shape data
+        this.shapes = [];
+        for (var index in this.state.shapes) {
+            var constructor = this.state.shapes[index].constructor;
+            var shape = new constructor();
+            this.shapes.push(shape);
+        }
 
+        //place ojbects in canvas
         var x = -5;
-        for (var index in this.shapes) {
-            var shape = this.shapes[index].shape
+
+        this.forEachShape((shape) => {
+            var shape = shape.shape
             shape.position.set(x, 0, 0)
             this.scene.add( shape );
 
-            x = x + 3;
-        }
+            x = x + 3;            
+        })
 
 
 
@@ -52,6 +62,7 @@ class PlatonicElement extends Component {
         this.refs.component.appendChild( this.renderer.domElement );  
 
         this.animate();
+
     }
 
     onMouseMove = (e) => {
@@ -60,21 +71,30 @@ class PlatonicElement extends Component {
         this.mouseVector.y = 1 - 2 * ( e.clientY / this.height );
         this.raycaster.setFromCamera(this.mouseVector, this.camera);
 
-        for (var index in this.shapes) {
-            var intersects = this.raycaster.intersectObjects([this.shapes[index].shape]);
+        this.forEachShape((shape) => {
+            var intersects = this.raycaster.intersectObjects(shape.shape);
 
             if (intersects.length > 0) //if mouse intersects the object
                 console.log(intersects)
-        }
+        })
 
+    }
+
+    forEachShape = (f) => {
+        for (var index in this.shapes) {
+            var shape = this.shapes[index];
+            f(shape);
+        }        
     }
 
     animate = () => {
         requestAnimationFrame( this.animate );
 
-        for (var index in this.shapes) {
-            this.shapes[index].animate();
-        }
+        console.log(this);
+        this.forEachShape((shape) => {
+            shape.animate();
+        })
+
         this.renderer.render( this.scene, this.camera );
     }
 

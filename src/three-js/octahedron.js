@@ -17,7 +17,8 @@ class Octahedron extends Shape {
 
         super(octahedron, wireframe);
 
-    }    
+    }
+
 }
 
 export default Octahedron;
