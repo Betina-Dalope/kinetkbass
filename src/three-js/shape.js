@@ -1,16 +1,22 @@
 class Shape {
     constructor(shape, wireframe) {
+
+
+        this._isHovering = false;
+        this._aniTimeout = null;
+
+        // the three js objects that make up the entity
         this.shape = shape;
         this.wireframe = wireframe;
 
-        this.entity = this.wireframe;
+        this.entity = this.wireframe; //entity is what we would reference in the component
         this.entity.add(this.shape);
 
+        // set initial properties
         this.wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
+        this.shape.material.visible = false;
 
         this.defaultAni();
-
-        this.shape.visible = false;
 
     }
     
@@ -21,15 +27,20 @@ class Shape {
 
 
     defaultAni = () => {
+        this._isHovering = false;
+        clearTimeout( this._aniTimeout );
         this.currentAniFunction = this._slowSpin;
+
     }
 
     onHover = () => {
-        this.currentAniFunction = this._fastSpin;
-        setTimeout(() => {
-            this.currentAniFunction = this._haltSpin;
-        }, 500)
-        
+        if (!this._isHovering) {
+            this._isHovering = true;
+            this.currentAniFunction = this._fastSpin;
+            this._aniTimeout = setTimeout(() => {
+                this.currentAniFunction = this._haltSpin;
+            }, 250)
+        }
     }
 
 

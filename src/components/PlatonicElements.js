@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
+import { TweenMax } from 'gsap';
 
 import Cube from '../three-js/cube.js';
 import Icosahedron from '../three-js/icosehadron';
@@ -39,7 +40,7 @@ class PlatonicElement extends Component {
         //place ojbects in canvas
         var x = -5;
 
-        this.forEachShape((shape) => {
+        this._forEachShape((shape) => {
             shape.entity.position.set(x, 0, 0)
             this.scene.add( shape.entity );
 
@@ -52,7 +53,10 @@ class PlatonicElement extends Component {
         //set up rays of interaction
         this.raycaster = new THREE.Raycaster();
         this.mouseVector = new THREE.Vector2();
+        this.listeners = [];
+        
         window.addEventListener( 'mousemove', this.onMouseMove, false ); // we're checking of mouse moved over an object
+        window.addEventListener( 'mousedown', this.onMouseDown, false );
 
 
     }
@@ -70,18 +74,44 @@ class PlatonicElement extends Component {
         this.mouseVector.y = 1 - 2 * ( e.clientY / this.height );
         this.raycaster.setFromCamera(this.mouseVector, this.camera);
 
-        this.forEachShape((shape) => {
+        this._forEachShape((shape) => {
             var intersects = this.raycaster.intersectObjects([shape.entity]);
 
             if (intersects.length > 0) //if mouse intersects the object
-                shape.onHover();
+                shape.onHover()
             else
                 shape.defaultAni();
         })
 
     }
 
-    forEachShape = (f) => {
+    onMouseDown = (e) => {
+        this._forEachShape((shape) => {
+            var intersects = this.raycaster.intersectObjects([shape.entity]);
+
+            if (intersects.length > 0) //if mouse intersects the object
+                this._moveToObject(shape);
+        })       
+    }
+
+    _moveToObject = (shape) => {
+        // look!  you can tween the properties of any object
+        this.camera.lookAt(this.camera.position);
+        TweenMax.set(this.camera.position, {x: this.camera.position.x, y: this.camera.position.y, z: this.camera.position.z})
+        TweenMax.to(this.camera.position, 3, {
+            x: shape.entity.position.x,
+            y: shape.entity.position.y,
+            z: shape.entity.position.z,
+            onComplete: () => {
+                //this.camera.position.set(shape.entity.position);
+                window.removeEventListener('mousemove', this.onMouseMove)
+                window.removeEventListener('mousedown', this.onMouseDown)
+                shape.defaultAni();
+            }
+        });
+    }
+
+    _forEachShape = (f) => {
         for (var index in this.shapes) {
             var shape = this.shapes[index];
             f(shape);
@@ -90,7 +120,7 @@ class PlatonicElement extends Component {
 
     animate = () => {
         requestAnimationFrame( this.animate );
-        this.forEachShape((shape) => {
+        this._forEachShape((shape) => {
             shape.animate();
         })
 
