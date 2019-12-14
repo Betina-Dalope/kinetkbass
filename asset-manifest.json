@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/kinetkbass/static/css/main.fc185d9a.chunk.css",
+    "main.js": "/kinetkbass/static/js/main.f8617e09.chunk.js",
+    "main.js.map": "/kinetkbass/static/js/main.f8617e09.chunk.js.map",
+    "runtime-main.js": "/kinetkbass/static/js/runtime-main.41d19724.js",
+    "runtime-main.js.map": "/kinetkbass/static/js/runtime-main.41d19724.js.map",
+    "static/css/2.69507bff.chunk.css": "/kinetkbass/static/css/2.69507bff.chunk.css",
+    "static/js/2.3145c350.chunk.js": "/kinetkbass/static/js/2.3145c350.chunk.js",
+    "static/js/2.3145c350.chunk.js.map": "/kinetkbass/static/js/2.3145c350.chunk.js.map",
+    "index.html": "/kinetkbass/index.html",
+    "precache-manifest.ff990a27881bd8e9f832ff85c816a60a.js": "/kinetkbass/precache-manifest.ff990a27881bd8e9f832ff85c816a60a.js",
+    "service-worker.js": "/kinetkbass/service-worker.js",
+    "static/css/2.69507bff.chunk.css.map": "/kinetkbass/static/css/2.69507bff.chunk.css.map",
+    "static/css/main.fc185d9a.chunk.css.map": "/kinetkbass/static/css/main.fc185d9a.chunk.css.map",
+    "static/js/2.3145c350.chunk.js.LICENSE": "/kinetkbass/static/js/2.3145c350.chunk.js.LICENSE"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.41d19724.js",
+    "static/css/2.69507bff.chunk.css",
+    "static/js/2.3145c350.chunk.js",
+    "static/css/main.fc185d9a.chunk.css",
+    "static/js/main.f8617e09.chunk.js"
+  ]
+}
