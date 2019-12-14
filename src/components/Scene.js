@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import * as THREE from 'three';
 import { TweenMax } from 'gsap';
 
-import PlatonicElement from './PlatonicElement';
-
 import Cube from '../three-js/cube.js';
 import Icosahedron from '../three-js/icosehadron';
 import Octahedron from '../three-js/octahedron';
@@ -136,13 +134,9 @@ class Scene extends Component {
 
     render() {
 
-        var platonicElementsHTML = [];
-
-        platonicElementsHTML.push(<PlatonicElement title="Cube" constructor={ Cube }/>)
-
         return (
             <div ref="component">
-                { platonicElementsHTML }
+
             </div>
 
         );
