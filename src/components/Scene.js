@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import * as THREE from 'three';
 import { TweenMax } from 'gsap';
 
+import PlatonicElement from './PlatonicElement';
+
 import Cube from '../three-js/cube.js';
 import Icosahedron from '../three-js/icosehadron';
 import Octahedron from '../three-js/octahedron';
 import Tetrahedron from '../three-js/tetrahedron';
 
-class PlatonicElement extends Component {
+import Prototypes from '../three-js/prototypes';
+
+class Scene extends Component {
     state = {
         shapes: [
             { title: 'Cube', constructor: Cube },
@@ -26,8 +30,16 @@ class PlatonicElement extends Component {
         
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize( this.width, this.height );
+        this.renderer.toneMapping = THREE.ReinhardToneMapping;
 
         this.camera.position.z = 10;
+
+        this.light = new THREE.PointLight( 0xff0000, 1, 100 );
+        this.light.shadowMapVisible = true;
+        this.light.position.set( 50, 50, 50 );
+        this.scene.add( this.light );
+
+        this.camera.add( new THREE.AmbientLight( 0x404040 ) );
 
         // Create 3.js objects from shape data
         this.shapes = [];
@@ -47,9 +59,6 @@ class PlatonicElement extends Component {
             x = x + 3;            
         })
 
-
-
-
         //set up rays of interaction
         this.raycaster = new THREE.Raycaster();
         this.mouseVector = new THREE.Vector2();
@@ -57,8 +66,6 @@ class PlatonicElement extends Component {
         
         window.addEventListener( 'mousemove', this.onMouseMove, false ); // we're checking of mouse moved over an object
         window.addEventListener( 'mousedown', this.onMouseDown, false );
-
-
     }
 
     componentDidMount() {
@@ -129,12 +136,18 @@ class PlatonicElement extends Component {
 
     render() {
 
+        var platonicElementsHTML = [];
+
+        platonicElementsHTML.push(<PlatonicElement title="Cube" constructor={ Cube }/>)
+
         return (
-            <div ref="component"></div>
+            <div ref="component">
+                { platonicElementsHTML }
+            </div>
 
         );
     }
 }
 
-export default PlatonicElement;
+export default Scene;
 

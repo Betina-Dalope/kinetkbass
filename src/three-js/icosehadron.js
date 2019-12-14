@@ -6,13 +6,13 @@ class Icosahedron extends Shape {
         //create cube
         
         var geometry = new THREE.IcosahedronGeometry(0.8);
-        var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+        var material = new THREE.MeshBasicMaterial( { color: 0x00ffff } );
 
         var icosahedron = new THREE.Mesh( geometry, material );;
 
         // create wireframe
         var geo = new THREE.EdgesGeometry( icosahedron.geometry );
-        var mat = new THREE.LineBasicMaterial( { color: 0x0000ff, linewidth: 4 } );
+        var mat = new THREE.LineBasicMaterial( { color: 0x0000ff, linewidth: 3 } );
         var wireframe = new THREE.LineSegments( geo, mat );
 
         super(icosahedron, wireframe);

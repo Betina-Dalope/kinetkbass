@@ -8,11 +8,11 @@ class Tetrahedron extends Shape {
         var geometry = new THREE.TetrahedronGeometry(0.9);
         var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
 
-        var tetrahedron = new THREE.Mesh( geometry, material );;
+        var tetrahedron = new THREE.Mesh( geometry, material );
 
         // create wireframe
         var geo = new THREE.EdgesGeometry( tetrahedron.geometry );
-        var mat = new THREE.LineBasicMaterial( { color: 0xff0000, linewidth: 4 } );
+        var mat = new THREE.LineBasicMaterial( { color: 0xff0000, linewidth: 3 } );
         var wireframe = new THREE.LineSegments( geo, mat );
 
         super(tetrahedron, wireframe);

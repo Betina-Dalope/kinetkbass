@@ -12,7 +12,7 @@ class Octahedron extends Shape {
 
         // create wireframe
         var geo = new THREE.EdgesGeometry( octahedron.geometry );
-        var mat = new THREE.LineBasicMaterial( { color: 0x800080, linewidth: 4 } );
+        var mat = new THREE.LineBasicMaterial( { color: 0x800080, linewidth: 3 } );
         var wireframe = new THREE.LineSegments( geo, mat );
 
         super(octahedron, wireframe);
