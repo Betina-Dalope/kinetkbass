@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Kinetk from './Kinetk';
-import GlowTestScene from './GlowTestScene';
+import LanternTestScene from './LanternTestScene';
 
 
 class App extends Component {
@@ -17,7 +17,7 @@ class App extends Component {
 			// uncomment for actual app
 			<Fragment>
 				<Kinetk></Kinetk>
-				<GlowTestScene></GlowTestScene>
+				<LanternTestScene></LanternTestScene>
 			</Fragment>
 
 
