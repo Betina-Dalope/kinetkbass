@@ -6,7 +6,7 @@ class Icosahedron extends Shape {
         //create cube
         
         var geometry = new THREE.IcosahedronGeometry(0.8);
-        var material = new THREE.MeshBasicMaterial( { color: 0x00ffff } );
+        var material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
 
         var icosahedron = new THREE.Mesh( geometry, material );;
 

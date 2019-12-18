@@ -6,7 +6,7 @@ class Octahedron extends Shape {
         //create cube
         
         var geometry = new THREE.OctahedronGeometry(0.8);
-        var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+        var material = new THREE.MeshBasicMaterial( { color: 0x800080 } );
 
         var octahedron = new THREE.Mesh( geometry, material );;
 

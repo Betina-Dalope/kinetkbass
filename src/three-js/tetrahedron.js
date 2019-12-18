@@ -6,7 +6,7 @@ class Tetrahedron extends Shape {
         //create cube
         
         var geometry = new THREE.TetrahedronGeometry(0.9);
-        var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+        var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 
         var tetrahedron = new THREE.Mesh( geometry, material );
 

@@ -14,7 +14,7 @@ class Shape {
 
         // set initial properties
         this.wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
-        this.shape.material.visible = false;
+        //this.shape.material.visible = false;
 
         this.defaultAni();
 

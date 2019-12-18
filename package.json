@@ -2,6 +2,7 @@
   "name": "kinetkbass",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://betina-dalope.github.io/kinetkbass",
   "dependencies": {
     "gsap": "^2.1.3",
     "node-sass-chokidar": "^1.4.0",
@@ -10,9 +11,13 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "^3.3.0",
-    "three-full": "^17.1.0"
+    "three-full": "^17.1.0",
+    "react-dat-gui": "^4.0.0",
+    "three": "^0.104.0"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build-css": "node-sass-chokidar src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
     "start-js": "react-scripts start",
@@ -38,7 +43,6 @@
     ]
   },
   "devDependencies": {
-    "react-dat-gui": "^4.0.0",
-    "three": "^0.104.0"
+    "gh-pages": "^2.1.1"
   }
 }
