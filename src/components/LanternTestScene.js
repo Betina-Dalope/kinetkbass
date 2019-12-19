@@ -49,8 +49,8 @@ class LanternTestScene extends Component {
         controls.maxPolarAngle = Math.PI * 0.5;
         controls.minDistance = 1;
         controls.maxDistance = 10;
-        scene.add(new THREE.AmbientLight(0x404040));
-        pointLight = new THREE.PointLight(0xffffff, 1);
+        scene.add(new THREE.AmbientLight("red"));
+        pointLight = new THREE.PointLight("yellow", .5, 2);
         camera.add(pointLight);
 
         var renderScene = new RenderPass(scene, camera);
@@ -116,22 +116,38 @@ class LanternTestScene extends Component {
             var geometry = shape.shape.geometry;
             for(var i in geometry.faces) {
 
+
+                // copy the face and create a custom geometry
+                // if you add all the vertices of the  face to a geometry, it copies the face
                 var customGeometry = new THREE.Geometry();
                 customGeometry.vertices.push(
-                    geometry.vertices[geometry.faces[i].a],
+                    geometry.vertices[geometry.faces[i].a], //geometry.faces[i].a returns an index of a vertex
                     geometry.vertices[geometry.faces[i].b],
                     geometry.vertices[geometry.faces[i].c],
+                    new THREE.Vector3(0,0,0),
                 )
-                customGeometry.faces.push(new THREE.Face3( 0, 1, 2 ))
-                //var customGeometry = new THREE.PlaneGeometry(.5,.5,.5);
 
-    
-                var plane = new THREE.Mesh( customGeometry , new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} ));
+                // you must create your own faces if you make a custom geometry
+                customGeometry.faces.push(
+                    new THREE.Face3( 0, 1, 2 ), // these numbers are just labels for a every vertex  -- play connect the dots
+                    new THREE.Face3( 0, 2, 3 ),
+                    new THREE.Face3( 0, 1, 3 ),
+                    new THREE.Face3( 1, 2, 3 ),
+                );
+
+                // this is necessary so that the geometry can reflect light.  otherwise the material will render as black (unless it is a basic material)
+                customGeometry.computeFaceNormals();
+                customGeometry.computeVertexNormals();
+
+
+                var customMaterial = new THREE.MeshPhongMaterial( {color: 0x0F1052, side: THREE.DoubleSide} );
+
+                var plane = new THREE.Mesh( customGeometry , customMaterial);
                 //plane.layers.enable( NON_BLOOM_SCENE );
 
                 //plane.lookAt(geometry.faces[i].normal); // rotate the same way as the face
 
-                const DISTANCE_FROM_SHAPE = .5;
+                const DISTANCE_FROM_SHAPE = .2;
 
                 plane.position.set(
                     geometry.faces[i].normal.x * DISTANCE_FROM_SHAPE,
