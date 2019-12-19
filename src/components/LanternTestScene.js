@@ -116,22 +116,35 @@ class LanternTestScene extends Component {
             var geometry = shape.shape.geometry;
             for(var i in geometry.faces) {
 
-                console.log(geometry.faces[i]);
-                console.log(geometry);
+                var customGeometry = new THREE.Geometry();
+                customGeometry.vertices.push(
+                    geometry.vertices[geometry.faces[i].a],
+                    geometry.vertices[geometry.faces[i].b],
+                    geometry.vertices[geometry.faces[i].c],
+                )
+                customGeometry.faces.push(new THREE.Face3( 0, 1, 2 ))
+                //var customGeometry = new THREE.PlaneGeometry(.5,.5,.5);
+
     
-                var plane = new THREE.Mesh( new THREE.PlaneGeometry( .5, .5, .5 ) , new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} ));
+                var plane = new THREE.Mesh( customGeometry , new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} ));
                 //plane.layers.enable( NON_BLOOM_SCENE );
-                //plane.position.set(geometry.faces[i].normal); 
-                plane.setRotationFromEuler(new THREE.Euler( geometry.faces[i].normal.x, geometry.faces[i].normal.y, geometry.faces[i].normal.z));
-                plane.position.set(geometry.faces[i].normal.x, geometry.faces[i].normal.y, geometry.faces[i].normal.z) //a child objects position is relative to the parent objects position
+
+                //plane.lookAt(geometry.faces[i].normal); // rotate the same way as the face
+
+                const DISTANCE_FROM_SHAPE = .5;
+
+                plane.position.set(
+                    geometry.faces[i].normal.x * DISTANCE_FROM_SHAPE,
+                    geometry.faces[i].normal.y * DISTANCE_FROM_SHAPE,
+                    geometry.faces[i].normal.z * DISTANCE_FROM_SHAPE) //a child objects position is relative to the parent objects position
                 shape.entity.add( plane );
-                //plane.position = geometry.faces[i].normal;
-    
-                //plane.position.set(geometry.faces[i].normal); 
+
             }
 
             shape.entity.position.set(x, 0, 0)
             scene.add( shape.entity );
+
+            console.log(geometry.faces);
 
             x = x + 3;            
         })

@@ -12,7 +12,7 @@ class Icosahedron extends Shape {
 
         // create wireframe
         var geo = new THREE.EdgesGeometry( icosahedron.geometry );
-        var mat = new THREE.LineBasicMaterial( { color: 0x0000ff, linewidth: 3 } );
+        var mat = new THREE.LineBasicMaterial( { color: 0xfffffff, linewidth: 3 } );
         var wireframe = new THREE.LineSegments( geo, mat );
 
         super(icosahedron, wireframe);
