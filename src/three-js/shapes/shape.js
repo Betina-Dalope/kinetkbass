@@ -26,53 +26,34 @@ class Shape {
         return visualOrb;
     }
  
-    // _copyFaces = (basicShape) => {
-    //     var facesGroup = new THREE.Group();
-    //     var geometry = basicShape.geometry;
-    //     for(var i in geometry.faces) {
+    _copyFacesHollow = (COLOR = 0x0F1052, DISTANCE_FROM_SHAPE = 0, SCALE = 1) => {
+        var facesGroup = new THREE.Group();
+        var geometry = this.basicShape.geometry;
+        for(var i in geometry.faces) {
 
 
-    //         // copy the face and create a custom geometry
-    //         // if you add all the vertices of the  face to a geometry, it copies the face
-    //         var customGeometry = new THREE.Geometry();
-    //         customGeometry.vertices.push(
-    //             geometry.vertices[geometry.faces[i].a], //geometry.faces[i].a returns an index of a vertex
-    //             geometry.vertices[geometry.faces[i].b],
-    //             geometry.vertices[geometry.faces[i].c],
-    //             new THREE.Vector3(0,0,0),
-    //         )
-
-    //         // you must create your own faces if you make a custom geometry
-    //         customGeometry.faces.push(
-    //             new THREE.Face3( 0, 1, 2 ), // these numbers are just labels for a every vertex  -- play connect the dots
-    //             new THREE.Face3( 0, 2, 3 ),
-    //             new THREE.Face3( 0, 1, 3 ),
-    //             new THREE.Face3( 1, 2, 3 ),
-    //         );
-
-    //         // this is necessary so that the geometry can reflect light.  otherwise the material will render as black (unless it is a basic material)
-    //         customGeometry.computeFaceNormals();
-    //         customGeometry.computeVertexNormals();
+                var torusGeometry = new THREE.TorusGeometry( 1.5, .1, 3, 3 );
+                var material = new THREE.MeshPhongMaterial( { color: COLOR } );
+                var torus = new THREE.Mesh( torusGeometry, material );
+    
+                
+                torus.lookAt(geometry.faces[i].normal);
+                torus.rotation.z = Math.PI / 2;
+                //torus.rotation.z = (geometry.faces[i].normal.y > 0) ? Math.PI / 1 : Math.PI / 2
+                
+                torus.position.set(
+                    geometry.faces[i].normal.x * DISTANCE_FROM_SHAPE,
+                    geometry.faces[i].normal.y * DISTANCE_FROM_SHAPE,
+                    geometry.faces[i].normal.z * DISTANCE_FROM_SHAPE) //a child objects position is relative to the parent objects position
+    
+    
+                facesGroup.add( torus );
 
 
-    //         var customMaterial = new THREE.MeshPhongMaterial( {color: 0x0F1052, side: THREE.DoubleSide} );
-
-    //         var plane = new THREE.Mesh( customGeometry , customMaterial);
-    //         //plane.layers.enable( NON_BLOOM_SCENE );
-
-    //         //plane.lookAt(geometry.faces[i].normal); // rotate the same way as the face
-
-    //         const DISTANCE_FROM_SHAPE = .2;
-
-    //         plane.position.set(
-    //             geometry.faces[i].normal.x * DISTANCE_FROM_SHAPE,
-    //             geometry.faces[i].normal.y * DISTANCE_FROM_SHAPE,
-    //             geometry.faces[i].normal.z * DISTANCE_FROM_SHAPE) //a child objects position is relative to the parent objects position
-    //         facesGroup.add( plane );
-    //     }
+        }
         
-    //     return facesGroup;
-    // }
+        return facesGroup;
+    }
 
     _copyFaces = (COLOR = 0x0F1052, DISTANCE_FROM_SHAPE = .2, SCALE = 1) => {
         var facesGroup = new THREE.Group();

@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 // import Stats from 'three-full';
 //import { GUI } from './jsm/libs/dat.gui.module.js';
 import 'react-dat-gui/dist/index.css';
-import DatGui, { DatBoolean, DatColor, DatNumber, DatString } from 'react-dat-gui';
+import DatGui, { DatBoolean, DatColor, DatNumber, DatString, DatFolder } from 'react-dat-gui';
 import { OrbitControls, GLTFLoader, EffectComposer, RenderPass, UnrealBloomPass } from 'three-full';
 
 import Cube from '../three-js/shapes/cube';
@@ -17,7 +17,7 @@ class LanternTestScene extends Component {
 
     state = {
         params: {
-            exposure: 1.2,
+            exposure: 1.1,
             bloomStrength: 1.5,
             bloomThreshold: 0.2,
             bloomRadius: 1,
@@ -47,8 +47,8 @@ class LanternTestScene extends Component {
         scene.add(camera);
         controls = new OrbitControls(camera, this.renderer.domElement);
         controls.maxPolarAngle = Math.PI * 0.5;
-        controls.minDistance = 1;
-        controls.maxDistance = 10;
+        controls.minDistance = -5;
+        controls.maxDistance = 20;
         this.ambientLight = new THREE.AmbientLight("white", .5)
         scene.add(this.ambientLight);
         pointLight = new THREE.PointLight("yellow", .5, 2);
@@ -90,7 +90,8 @@ class LanternTestScene extends Component {
     }
 
     drawCube = (scene) => {
-        var gridHelper = new THREE.GridHelper( 10, 10 );
+        //var gridHelper = new THREE.GridHelper( 20, 20 );
+        var gridHelper = new THREE.PolarGridHelper();
         scene.add( gridHelper );
 
         this.shapes = [];
@@ -148,12 +149,14 @@ class LanternTestScene extends Component {
 
             <div ref="component">
                 <DatGui data={params} onUpdate={this.handleUpdate}>
+                    <DatFolder title="Bloom">
                     <DatNumber path='exposure' label='exposure' min={0.1} max={2.0} step={0.1}/>
                     <DatNumber path='bloomStrength' label='bloomStrength' min={0.0} max={1.0} step={0.1}/>
                     <DatNumber path='bloomThreshold' label='bloomThreshold' min={0.0} max={3.0} step={0.1}/>
                     <DatNumber path='bloomRadius' label='bloomRadius' min={0.0} max={1.0} step={0.01}/>
 
                     <DatColor path='ambientLight' label='ambientLight'/>
+                    </DatFolder>
                 </DatGui>
             </div>
 

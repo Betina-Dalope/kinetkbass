@@ -7,14 +7,14 @@ export class Icosahedron extends Shape {
         super();
         
         var geometry = new THREE.IcosahedronGeometry(0.8);
-        var material = new THREE.MeshBasicMaterial( { color: "blue" } );
+        var material = new THREE.MeshBasicMaterial( { color: "yellow" } );
 
         this.basicShape = new THREE.Mesh( geometry, material ); 
 
 
         this.group.add(this._copyFaces("green"));
 
-        this.group.add(this._copyFaces("yellow", .5, .6));
+        this.group.add(this._copyFaces("purple", .5, .6));
 
         this.group.add(this.basicShape);
 

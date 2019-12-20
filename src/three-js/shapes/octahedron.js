@@ -13,7 +13,9 @@ export class Octahedron extends Shape {
 
         this.group.add(this._copyFaces("purple"));
 
-        this.group.add(this._copyFaces("blue", .5, .6));
+        this.group.add(this._copyFaces("green", .5, .6));
+        
+        this.group.add(this._copyFacesHollow("red"));
 
     }    
 }
