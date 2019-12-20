@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/kinetkbass/static/css/main.fc185d9a.chunk.css",
-    "main.js": "/kinetkbass/static/js/main.7398638f.chunk.js",
-    "main.js.map": "/kinetkbass/static/js/main.7398638f.chunk.js.map",
+    "main.js": "/kinetkbass/static/js/main.93baff84.chunk.js",
+    "main.js.map": "/kinetkbass/static/js/main.93baff84.chunk.js.map",
     "runtime-main.js": "/kinetkbass/static/js/runtime-main.41d19724.js",
     "runtime-main.js.map": "/kinetkbass/static/js/runtime-main.41d19724.js.map",
     "static/css/2.69507bff.chunk.css": "/kinetkbass/static/css/2.69507bff.chunk.css",
     "static/js/2.4f1bea70.chunk.js": "/kinetkbass/static/js/2.4f1bea70.chunk.js",
     "static/js/2.4f1bea70.chunk.js.map": "/kinetkbass/static/js/2.4f1bea70.chunk.js.map",
     "index.html": "/kinetkbass/index.html",
-    "precache-manifest.bbd5435f93316ef87153ed1a2c0ff0e7.js": "/kinetkbass/precache-manifest.bbd5435f93316ef87153ed1a2c0ff0e7.js",
+    "precache-manifest.82f4b6fa60d0dac28f35209ed7d460dc.js": "/kinetkbass/precache-manifest.82f4b6fa60d0dac28f35209ed7d460dc.js",
     "service-worker.js": "/kinetkbass/service-worker.js",
     "static/css/2.69507bff.chunk.css.map": "/kinetkbass/static/css/2.69507bff.chunk.css.map",
     "static/css/main.fc185d9a.chunk.css.map": "/kinetkbass/static/css/main.fc185d9a.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.69507bff.chunk.css",
     "static/js/2.4f1bea70.chunk.js",
     "static/css/main.fc185d9a.chunk.css",
-    "static/js/main.7398638f.chunk.js"
+    "static/js/main.93baff84.chunk.js"
   ]
 }
