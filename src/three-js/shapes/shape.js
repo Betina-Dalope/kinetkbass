@@ -47,6 +47,8 @@ class Shape {
                     geometry.faces[i].normal.z * DISTANCE_FROM_SHAPE) //a child objects position is relative to the parent objects position
     
     
+                torus.scale.set(SCALE, SCALE, SCALE);
+
                 facesGroup.add( torus );
 
 

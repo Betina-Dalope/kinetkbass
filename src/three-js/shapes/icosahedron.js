@@ -11,12 +11,7 @@ export class Icosahedron extends Shape {
 
         this.basicShape = new THREE.Mesh( geometry, material ); 
 
-
-        this.group.add(this._copyFaces("green"));
-
-        this.group.add(this._copyFaces("purple", .5, .6));
-
-        this.group.add(this.basicShape);
+        this.group.add(this._copyFaces("blue", .2, .6));
 
     }    
 }

@@ -11,9 +11,9 @@ export class Cube extends Shape {
 
         this.basicShape = new THREE.Mesh( geometry, material ); 
 
-        this.group.add(this._copyFaces("teal"));
+        this.group.add(this._copyFaces("purple"));
 
-        this.group.add(this._copyFaces("red", .5, .6));
+        this.group.add(this._copyFaces("purple", .5, .6));
 
 
         //uncomment to change the light
@@ -30,7 +30,6 @@ export class Cube extends Shape {
         var material = new THREE.MeshBasicMaterial( { color: "blue" } );
 
         this.basicShape = new THREE.Mesh( geometry, material );
-        this.group.add(this._copyFaces("blue", .4, .7));
 
         this.group.add(this._copyFaces("yellow", 6, .3));
 

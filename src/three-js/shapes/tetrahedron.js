@@ -17,6 +17,14 @@ export class Tetrahedron extends Shape {
 
         //this.group.add(this._copyFacesHollow("brown"));
 
+
+        var geometry = new THREE.IcosahedronGeometry(0.8);
+        var material = new THREE.MeshBasicMaterial( { color: "blue" } );
+
+        this.basicShape = new THREE.Mesh( geometry, material );
+
+        this.group.add(this._copyFaces("yellow", 6, .3));
+
     }    
 }
 

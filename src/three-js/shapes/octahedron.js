@@ -11,11 +11,11 @@ export class Octahedron extends Shape {
 
         this.basicShape = new THREE.Mesh( geometry, material ); 
 
-        this.group.add(this._copyFaces("purple"));
+        // this.group.add(this._copyFaces("purple"));
 
-        this.group.add(this._copyFaces("green", .5, .6));
+        this.group.add(this._copyFaces("green", .1, .6));
         
-        this.group.add(this._copyFacesHollow("red"));
+        this.group.add(this._copyFacesHollow("darkgreen", 0, .2));
 
     }    
 }
