@@ -35,6 +35,14 @@ class Shape {
         // 3. show content and text
     }
 
+    _showWireframe = () => {
+        // TEST FOR VISIBILITY
+        var wireframeGeometry = new THREE.EdgesGeometry( this._basicShape.geometry );
+        var wireframeMaterial = new THREE.LineBasicMaterial( { color: "green" } );
+        var wireframe = new THREE.LineSegments( wireframeGeometry, wireframeMaterial );
+        this.entity.add(wireframe);
+    }
+
 }
 
 export default Shape;

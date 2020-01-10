@@ -1,8 +1,7 @@
 
 import * as THREE from 'three';
 import React, { Component } from 'react';
-// import Stats from 'three-full';
-//import { GUI } from './jsm/libs/dat.gui.module.js';
+
 import 'react-dat-gui/dist/index.css';
 import DatGui, { DatBoolean, DatColor, DatNumber, DatString, DatFolder } from 'react-dat-gui';
 
@@ -10,16 +9,21 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-//import { OrbitControls, GLTFLoader, TrackballControls, EffectComposer, RenderPass, UnrealBloomPass } from 'three-full';
 
 import Cube from '../three-js/shapes-w-ani/cube';
+import Icosahedron from '../three-js/shapes-w-ani/icosahedron';
+import Tetrahedron from '../three-js/shapes-w-ani/tetrahedron';
+
+import Camera from '../three-js/camera';
+import Light from '../three-js/light';
+
 
 
 class Animation extends Component {
 
     state = {
         params: {
-            exposure: 2,
+            exposure: 1.5,
             bloomStrength: 1.5,
             bloomThreshold: 0.1,
             bloomRadius: 1,
@@ -33,6 +37,8 @@ class Animation extends Component {
         },
         shapes: [
             { title: 'Cube', constructor: Cube },
+            { title: 'Icosahedron', constructor: Icosahedron },
+            { title: 'Tetrahedron', constructor: Tetrahedron },
         ]
     }
 
@@ -52,62 +58,44 @@ class Animation extends Component {
 
         // 2. set up camera
         scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 100);
-        this.camera.position.set(this.state.params.camera.x, this.state.params.camera.y, this.state.params.camera.z);
-        scene.add(this.camera);
+        this.camera = new Camera(scene, this.renderer);
+
+
+        new Light(scene, this.camera.entity);
 
         //Use Orbit controls to maintain a positive y (do not allow going underneath the scene)
-        controls = new OrbitControls(this.camera, this.renderer.domElement);
+        var controls = new OrbitControls(this.camera.entity, this.renderer.domElement);
         controls.maxPolarAngle = Math.PI * 0.5;
         controls.minDistance = 0;
         controls.maxDistance = 20;
 
 
-        this.ambientLight = new THREE.AmbientLight(this.state.params.ambientLight, .5)
-        scene.add(this.ambientLight);
-        this.pointLight = new THREE.PointLight(this.state.params.pointLight, .5, 2);
-        this.camera.add(this.pointLight);
-
-
         // 3. set up bloompass
         this.composer = new EffectComposer(this.renderer);
 
-        var renderScene = new RenderPass(scene, this.camera);
-        var bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-        bloomPass.threshold = this.state.params.bloomThreshold;
-        bloomPass.strength = this.state.params.bloomStrength;
-        bloomPass.radius = this.state.params.bloomRadius;
+        var renderScene = new RenderPass(scene, this.camera.entity);
+        this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        this.bloomPass.threshold = this.state.params.bloomThreshold;
+        this.bloomPass.strength = this.state.params.bloomStrength;
+        this.bloomPass.radius = this.state.params.bloomRadius;
 
         
         this.composer.addPass(renderScene);
-        this.composer.addPass(bloomPass);
-
-
-        var geometry = new THREE.IcosahedronGeometry( 0.6 );
-        var material = new THREE.MeshPhongMaterial({color: "black" })
-
-       var icosahedron = new THREE.Mesh( geometry, material ); 
-       icosahedron.position.set(-1,0,0);
-       scene.add(icosahedron);
-
+        this.composer.addPass(this.bloomPass);
 
         this._forEachShape((shape, index) => {
             var constructor = shape.constructor;
             var object = new constructor();
-            //object.entity.position.set(0,0,0);
-            console.log(object);
+
             scene.add(object.entity);
             shape.object = object; // effects the state
-
-            console.log(object._basicShape);
         })
 
 
         window.onresize = () => {
             var width = window.innerWidth;
             var height = window.innerHeight;
-            this.camera.aspect = width / height;
-            this.camera.updateProjectionMatrix();
+            this.camera.update()
             this.renderer.setSize(width, height);
             this.composer.setSize(width, height);
         };
@@ -137,16 +125,35 @@ class Animation extends Component {
         }
     }
 
+    handleUpdate = (newParams) => {
+        this.setState(prevState => ({
+            params: { ...prevState.params, ...newParams }
+        }));
+
+        this.bloomPass.threshold = newParams.bloomThreshold;
+        this.bloomPass.strength = newParams.bloomStrength;
+        this.bloomPass.radius = newParams.bloomRadius;
+        this.renderer.toneMappingExposure = Math.pow(newParams.exposure, 4.0);
+
+        
+    }
 
     render() {
         const { params } = this.state;
-
 
         return (
 
 
             <div ref="component">
 
+<DatGui data={params} onUpdate={this.handleUpdate}>
+                    <DatFolder title="Bloom">
+                    <DatNumber path='exposure' label='exposure' min={0.1} max={2.0} step={0.1}/>
+                    <DatNumber path='bloomStrength' label='bloomStrength' min={0.0} max={1.0} step={0.1}/>
+                    <DatNumber path='bloomThreshold' label='bloomThreshold' min={0.0} max={3.0} step={0.1}/>
+                    <DatNumber path='bloomRadius' label='bloomRadius' min={0.0} max={1.0} step={0.01}/>
+                    </DatFolder>
+                </DatGui>
             </div>
 
         );
