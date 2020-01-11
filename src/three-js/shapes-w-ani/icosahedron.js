@@ -1,5 +1,6 @@
 import Shape from './shape.js';
 import * as THREE from 'three';
+import { TweenMax } from 'gsap';
 
 export class Icosahedron extends Shape {
     constructor() {
@@ -12,20 +13,23 @@ export class Icosahedron extends Shape {
         this._basicShape = new THREE.Mesh( geometry, material ); 
 
         this.entity.add(this._basicShape);
+
+        this._wireframe = this._createWireframe()
+
+        this.entity.add(this._wireframe);
+
+    }
+
+    initAni = () => {
         this.entity.position.set(-1,0,0);
-
-        //this._showWireframe();
-
-        setTimeout(() => {
+        this._wireframe.visible = false;
+        TweenMax.delayedCall(5, () => {
             this.entity.position.set(-3,0,0);
-            this._showWireframe();
-        }, 5000)
-
+            this._wireframe.visible = true;
+        })
     }
     
-    animate = () => {
-        //this._basicShape.rotation.x += .5;
-    }
+    
 }
 
 export default Icosahedron;

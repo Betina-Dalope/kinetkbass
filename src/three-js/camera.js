@@ -11,10 +11,9 @@ class Camera {
         this.entity.lookAt(0,0,0); // for some reason this needs to go after it's added to a scene
 
 
-        this.pivotPoint = new THREE.Object3D();
-        this.pivotPoint.add(this.entity);
-        scene.add(this.pivotPoint);
-        this._initAni();
+        this._pivotPoint = new THREE.Object3D(); // use this to rotate the camera around objects or the scene
+        this._pivotPoint.add(this.entity);
+        scene.add(this._pivotPoint);
     }
 
     update = () => {
@@ -22,9 +21,11 @@ class Camera {
         this.entity.updateProjectionMatrix();
     }
 
-    _initAni = () => {
+    initAni = () => {
 
-        var _this = this;
+        this.entity.position.set(-5, 0, 0);
+        this._pivotPoint.rotation.set(0,0,0);
+
         new TimelineLite()
             .to(this.entity.position, 3, {x: -7, ease: Expo.easeIn})
             .to(this.entity.position, 5, {x: -.5, ease: Expo.easeOut })
@@ -34,10 +35,10 @@ class Camera {
             //     _this.entity.lookAt(0,0,0);
             // }})
             .add("spin out", "-=1")
-            .set(this.pivotPoint.rotation, {y: -2}, "spin out")
-            .to(this.entity.position, 4, {x: -10 }, "spin out")
-            .to(this.pivotPoint.rotation, 10, {y: 4.5}, "spin out")
-            .to(this.entity.position, 4, {z: 4, delay: -4})
+            .set(this._pivotPoint.rotation, {y: -2}, "spin out")
+            .to(this.entity.position, 4, {x: -15 }, "spin out")
+            .to(this._pivotPoint.rotation, 10, {y: 4.8}, "spin out")
+            .to(this.entity.position, 5, {z: 4.5, delay: -5, ease: Expo.easeOut})
             
     }
 

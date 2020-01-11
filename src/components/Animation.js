@@ -1,9 +1,10 @@
 
 import * as THREE from 'three';
 import React, { Component } from 'react';
+import { TweenMax } from 'gsap';
 
 import 'react-dat-gui/dist/index.css';
-import DatGui, { DatBoolean, DatColor, DatNumber, DatString, DatFolder } from 'react-dat-gui';
+import DatGui, { DatSelect, DatNumber, DatButton, DatFolder } from 'react-dat-gui';
 
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
@@ -13,6 +14,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Cube from '../three-js/shapes-w-ani/cube';
 import Icosahedron from '../three-js/shapes-w-ani/icosahedron';
 import Tetrahedron from '../three-js/shapes-w-ani/tetrahedron';
+import Octahedron from '../three-js/shapes-w-ani/octahedron';
 
 import Camera from '../three-js/camera';
 import Light from '../three-js/light';
@@ -27,25 +29,19 @@ class Animation extends Component {
             bloomStrength: 1.5,
             bloomThreshold: 0.1,
             bloomRadius: 1,
-            ambientLight: "#ffffff",
-            pointLight: "yellow",
-            camera: {
-                x: -5,
-                y: 0,
-                z: 0
-            }
+            animation: 'initAni'
         },
         shapes: [
             { title: 'Cube', constructor: Cube },
             { title: 'Icosahedron', constructor: Icosahedron },
+            { title: 'Octahedron', constructor: Octahedron },
             { title: 'Tetrahedron', constructor: Tetrahedron },
         ]
     }
 
     constructor(props) {
         super(props);
-        var scene, camera, controls, pointLight, stats;
-        var composer;
+        var scene, controls;
 
 
         // 1. set up renderer
@@ -104,7 +100,6 @@ class Animation extends Component {
     componentDidMount() {
         this.refs.component.appendChild(this.renderer.domElement);  //modified
 
-
         this.animate()
     }
 
@@ -134,11 +129,25 @@ class Animation extends Component {
         this.bloomPass.strength = newParams.bloomStrength;
         this.bloomPass.radius = newParams.bloomRadius;
         this.renderer.toneMappingExposure = Math.pow(newParams.exposure, 4.0);
+    }
 
-        
+    initAni = () => {
+        TweenMax.killAll();
+        this.camera.initAni();
+
+        this._forEachShape((shape) => {
+            shape.object.initAni();
+        })
+    }
+
+    otherAni = () => {
+        TweenMax.killAll();
+        console.log('otherAni');
     }
 
     render() {
+
+        this[this.state.params.animation]();
         const { params } = this.state;
 
         return (
@@ -146,12 +155,16 @@ class Animation extends Component {
 
             <div ref="component">
 
-<DatGui data={params} onUpdate={this.handleUpdate}>
+                <DatGui data={params} onUpdate={this.handleUpdate}>
                     <DatFolder title="Bloom">
-                    <DatNumber path='exposure' label='exposure' min={0.1} max={2.0} step={0.1}/>
-                    <DatNumber path='bloomStrength' label='bloomStrength' min={0.0} max={1.0} step={0.1}/>
-                    <DatNumber path='bloomThreshold' label='bloomThreshold' min={0.0} max={3.0} step={0.1}/>
-                    <DatNumber path='bloomRadius' label='bloomRadius' min={0.0} max={1.0} step={0.01}/>
+                        <DatNumber path='exposure' min={0.1} max={2.0} step={0.1}/>
+                        <DatNumber path='bloomStrength'  min={0.0} max={1.0} step={0.1}/>
+                        <DatNumber path='bloomThreshold' min={0.0} max={3.0} step={0.1}/>
+                        <DatNumber path='bloomRadius' min={0.0} max={1.0} step={0.01}/>
+                    </DatFolder>
+                    <DatFolder title="Animation">
+                        <DatSelect path='animation' options={ ['initAni', 'otherAni'] }></DatSelect>
+                        <DatButton label='Replay' onClick={ this[this.state.params.animation] }></DatButton>
                     </DatFolder>
                 </DatGui>
             </div>

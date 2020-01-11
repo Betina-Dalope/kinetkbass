@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { Color } from 'three';
+import { TweenMax } from 'gsap';
+import { Wireframe } from 'three/examples/jsm/lines/Wireframe.js';
+import { WireframeGeometry2 } from 'three/examples/jsm/lines/WireframeGeometry2.js';
 
 class Shape {
 
@@ -15,18 +17,34 @@ class Shape {
 
     }
 
+    _constructInnerLight = () => {
+        //visual orb simulates a glow with the bloom effect, but the actual light is hidden inside it
+        // the material is transparent but full opacity to allow light to pass through
+        var geometry = new THREE.SphereGeometry(.15);
+        var material = new THREE.MeshBasicMaterial({color: "white", transparent: true, opacity: 1});
+        var visualOrb = new THREE.Mesh(geometry, material);
+
+        var light = new THREE.PointLight( "white", 1, 100 );
+        light.position.set( 0, 0, 0 );
+        visualOrb.add( light );
+
+        return visualOrb;
+    }
+
     // cycle through inner light colors
     _cycleColors = () => {
     }
 
-    // animate open the shape
-    open = () => {
-
+    // called in the scene's render loop and changed in the scene's global animation functions
+    animate = () => {
     }
 
-    // animate close the shape
-    close = () => {
-
+    // default init animation - gets overriden by children
+    initAni = () => {
+        this.entity.visible = false;
+        TweenMax.delayedCall(5, () => {
+            this.entity.visible = true; 
+        })
     }
 
     goTo = () => {
@@ -35,12 +53,34 @@ class Shape {
         // 3. show content and text
     }
 
-    _showWireframe = () => {
-        // TEST FOR VISIBILITY
-        var wireframeGeometry = new THREE.EdgesGeometry( this._basicShape.geometry );
-        var wireframeMaterial = new THREE.LineBasicMaterial( { color: "green" } );
-        var wireframe = new THREE.LineSegments( wireframeGeometry, wireframeMaterial );
-        this.entity.add(wireframe);
+
+    _createWireframe = (COLOR = 0x00ff00 ) => {
+
+        var facesGroup = new THREE.Group();
+        var geometry = this._basicShape.geometry;
+        for(var i in geometry.faces) {
+
+            // var path = new THREE.CurvePath();
+            // path.add( new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].b] ) )
+            // path.add( new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].c] ) )
+            // path.add( new THREE.LineCurve3( geometry.vertices[geometry.faces[i].b], geometry.vertices[geometry.faces[i].c] ) )
+            //path.autoClose = true;
+            var path = new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].b] );
+            var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .02, 3, false );
+            var material = new THREE.MeshPhongMaterial( { color: COLOR } );
+            var mesh = new THREE.Mesh( tubegeometry, material );
+            facesGroup.add( mesh );
+
+            var path = new THREE.LineCurve3( geometry.vertices[geometry.faces[i].b], geometry.vertices[geometry.faces[i].c] );
+            var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .02, 3, false );
+            var material = new THREE.MeshPhongMaterial( { color: COLOR} );
+            var mesh = new THREE.Mesh( tubegeometry, material );
+            facesGroup.add( mesh );
+
+
+        }
+        
+        return facesGroup;        
     }
 
 }
