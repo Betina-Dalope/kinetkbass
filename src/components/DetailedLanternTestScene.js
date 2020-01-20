@@ -5,7 +5,10 @@ import React, { Component } from 'react';
 //import { GUI } from './jsm/libs/dat.gui.module.js';
 import 'react-dat-gui/dist/index.css';
 import DatGui, { DatBoolean, DatColor, DatNumber, DatString, DatFolder } from 'react-dat-gui';
-import { OrbitControls, GLTFLoader, TrackballControls, EffectComposer, RenderPass, UnrealBloomPass } from 'three-full';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 
 import Cube from '../three-js/shapes/cube';
 import Icosahedron from '../three-js/shapes/icosahedron';
@@ -13,7 +16,7 @@ import Octahedron from '../three-js/shapes/octahedron';
 import Tetrahedron from '../three-js/shapes/tetrahedron';
 
 
-class LanternTestScene extends Component {
+class Scene extends Component {
 
     state = {
         params: {
@@ -186,4 +189,4 @@ class LanternTestScene extends Component {
     }
 }
 
-export default LanternTestScene;
+export default Scene;

@@ -29,7 +29,7 @@ class Animation extends Component {
             bloomStrength: 1.5,
             bloomThreshold: 0.1,
             bloomRadius: 1,
-            animation: 'initAni'
+            animation: 'openAni'
         },
         shapes: [
             { title: 'Cube', constructor: Cube },
@@ -57,7 +57,7 @@ class Animation extends Component {
         this.camera = new Camera(scene, this.renderer);
 
 
-        new Light(scene, this.camera.entity);
+        this.light = new Light(scene, this.camera.entity);
 
         //Use Orbit controls to maintain a positive y (do not allow going underneath the scene)
         var controls = new OrbitControls(this.camera.entity, this.renderer.domElement);
@@ -134,15 +134,29 @@ class Animation extends Component {
     initAni = () => {
         TweenMax.killAll();
         this.camera.initAni();
+        this.light.initAni();
 
         this._forEachShape((shape) => {
             shape.object.initAni();
         })
     }
 
-    otherAni = () => {
+    mainMenu = () => {
         TweenMax.killAll();
-        console.log('otherAni');
+        this.camera.mainMenu();
+        this.light.mainMenu();
+        this._forEachShape((shape) => {
+            shape.object.mainMenu();
+        })
+    }
+
+    openAni = () => {
+        TweenMax.killAll();
+        this.camera.mainMenu();
+        this.light.openAni();
+        this._forEachShape((shape) => {
+            shape.object.openAni();
+        })
     }
 
     render() {
@@ -163,7 +177,7 @@ class Animation extends Component {
                         <DatNumber path='bloomRadius' min={0.0} max={1.0} step={0.01}/>
                     </DatFolder>
                     <DatFolder title="Animation">
-                        <DatSelect path='animation' options={ ['initAni', 'otherAni'] }></DatSelect>
+                        <DatSelect path='animation' options={ ['initAni', 'mainMenu', 'openAni'] }></DatSelect>
                         <DatButton label='Replay' onClick={ this[this.state.params.animation] }></DatButton>
                     </DatFolder>
                 </DatGui>

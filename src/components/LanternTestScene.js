@@ -5,7 +5,11 @@ import React, { Component } from 'react';
 //import { GUI } from './jsm/libs/dat.gui.module.js';
 import 'react-dat-gui/dist/index.css';
 import DatGui, { DatBoolean, DatColor, DatNumber, DatString } from 'react-dat-gui';
-import { OrbitControls, GLTFLoader, EffectComposer, RenderPass, UnrealBloomPass } from 'three-full';
+
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import Cube from '../three-js/cube.js';
 import Icosahedron from '../three-js/icosehadron';
