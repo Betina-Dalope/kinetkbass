@@ -5,18 +5,13 @@ import { TweenMax } from 'gsap';
 export class Octahedron extends Shape {
     constructor() {
         
-        
-        super();
         var geometry = new THREE.OctahedronGeometry( 0.6 );
-        var material = new THREE.MeshPhongMaterial({color: "black" })
+        var colors = { primary: "purple", secondary: "red" };
+        super( geometry, colors );
 
-        this._basicShape = new THREE.Mesh( geometry, material ); 
-
-        this.entity.add(this._basicShape);
         this.entity.position.set(-6,0,0);
 
-        this.entity.add(this._createWireframe());
-
+        //this._outerLayers.add(this._copyFaces("#590304", .1, .8));
     }
     
     

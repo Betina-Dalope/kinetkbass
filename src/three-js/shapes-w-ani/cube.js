@@ -5,16 +5,9 @@ import { TweenMax } from 'gsap';
 export class Cube extends Shape {
     constructor() {
         
-        
-        super();
         var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        var material = new THREE.MeshPhongMaterial({color: "black" })
-
-        this._basicShape = new THREE.Mesh( geometry, material ); 
-
-        this.entity.add(this._basicShape);
-        this._wireframe = this._createWireframe()
-        this.entity.add(this._wireframe);
+        var colors = { primary: "green", secondary: "purple" };
+        super(geometry, colors);
 
         this.entity.position.set(0,0,0);
 
@@ -23,12 +16,12 @@ export class Cube extends Shape {
         //this._innerLight.geometry = new THREE.SphereGeometry(1, 4, 4, 0, 6.3, 5.5, 6.3);
 
         // outer layers
-        var geometry = new THREE.BoxGeometry( .6, .6, .6 );
-        var material = new THREE.MeshPhongMaterial({color: "blue" , side: THREE.DoubleSide});
-        this._outerLayers.add(new THREE.Mesh( geometry, material ));
-        var geometry = new THREE.IcosahedronGeometry( .3 );
-        var material = new THREE.MeshPhongMaterial({color: "purple" , side: THREE.DoubleSide});
-        this._outerLayers.add(new THREE.Mesh( geometry, material ));
+        // var geometry = new THREE.BoxGeometry( .6, .6, .6 );
+        // var material = new THREE.MeshPhongMaterial({color: "blue" , side: THREE.DoubleSide});
+        // this._outerLayers.add(new THREE.Mesh( geometry, material ));
+        // var geometry = new THREE.IcosahedronGeometry( .3 );
+        // var material = new THREE.MeshPhongMaterial({color: "purple" , side: THREE.DoubleSide});
+        // this._outerLayers.add(new THREE.Mesh( geometry, material ));
         // var geometry = new THREE.IcosahedronGeometry( .4 );
         // var material = new THREE.MeshPhongMaterial({color: "green", side: THREE.DoubleSide });
         // this._outerLayers.add(new THREE.Mesh( geometry, material ));
@@ -40,8 +33,14 @@ export class Cube extends Shape {
 
     initAni = () => {
 
+        this._reset();
+        // 1. set point light color to white
+        var originalColor = this._innerLight.material.color;
+        this._innerLight.material.color = new THREE.Color("white");
+
         // 1. make inner light the only visible thing
         this._innerLight.scale.set(1, 1, 1);
+
         this._wireframe.visible = false;
         this._innerLight.material.opacity = 1;
         this._basicShape.visible = false;
@@ -64,11 +63,14 @@ export class Cube extends Shape {
             this._innerLight.rotation.x= 0;
             this.animate = function() {};
             //this._wireframe.visible = true;
+
+            this._innerLight.material.color = originalColor;
         })
     }
 
     mainMenu = () => {
-        this._basicShape.visible = false;
+        this._reset();
+        this._basicShape.visible = true;
         this._innerLight.scale.set(1, 1, 1);
         this._innerLight.material.opacity = 1;
         this._wireframe.scale.set(.15,.15,.15);
@@ -86,8 +88,13 @@ export class Cube extends Shape {
     }
 
     openAni = () => {
-        this._basicShape.visible = true;
+
+        super.openAni();
+        //this._basicShape.visible = true;
+        this._innerLight.material.opacity = 1;
         this._innerLight.scale.set(.15, .15, .15);
+
+        
     }
 }
 

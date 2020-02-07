@@ -4,18 +4,11 @@ import * as THREE from 'three';
 export class Tetrahedron extends Shape {
     constructor() {
         
-        
-        super();
         var geometry = new THREE.TetrahedronGeometry( 0.8 );
-        var material = new THREE.MeshPhongMaterial({color: "black" })
+        var colors = { primary: "red", secondary: "cyan" };
+        super( geometry, colors );
 
-        this._basicShape = new THREE.Mesh( geometry, material );
-        this.entity.add(this._basicShape);
-
-        
         this.entity.position.set(-9,0,0);
-
-        this.entity.add(this._createWireframe());
 
     }
 

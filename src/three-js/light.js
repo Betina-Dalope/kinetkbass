@@ -6,8 +6,9 @@ class Light {
     constructor(scene, camera) {
         this.ambientLight = new THREE.AmbientLight(0x404040, 1)
         scene.add(this.ambientLight);
+
         this.pointLight = new THREE.PointLight("yellow", .5, 2);
-        camera.add(this.pointLight);
+        //camera.add(this.pointLight);
     }
 
     initAni = () => {
@@ -21,10 +22,14 @@ class Light {
     }
 
     openAni = () => {
-        console.log("blue");
-        this.ambientLight.color = new THREE.Color("blue");
-        this.ambientLight.intensity = 1;       
+        // console.log("blue");
+        // this.ambientLight.color = new THREE.Color("blue");
+        // this.ambientLight.intensity = 1; 
+        
+        this.ambientLight.color = new THREE.Color(0x404040);
+        this.ambientLight.intensity = .2; 
     }
+
 
 
 }

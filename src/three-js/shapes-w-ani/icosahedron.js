@@ -4,29 +4,23 @@ import { TweenMax } from 'gsap';
 
 export class Icosahedron extends Shape {
     constructor() {
-        
-        
-        super();
+
         var geometry = new THREE.IcosahedronGeometry( 0.6 );
-        var material = new THREE.MeshPhongMaterial({color: "black" })
+        var colors = { primary: "blue", secondary: "orange" };
+        super( geometry, colors );
 
-        this._basicShape = new THREE.Mesh( geometry, material ); 
-
-        this.entity.add(this._basicShape);
-
-        this._wireframe = this._createWireframe();
-
-        this.entity.add(this._wireframe);
         this.entity.position.set(-3,0,0);
 
+        this._basicShape.children[0].material.color = new THREE.Color("#00013b")
 
-        
+        //this._outerLayers.add(this._copyFaces("#00013b", 0, .8));
 
     }
 
     initAni = () => {
         this.animate = () => {};
         this.entity.position.set(-1,0,0);
+        this.entity.rotation.set(0,0,0);
         this._wireframe.visible = false;
         this._outerLayers.visible = false;
         this._basicShape.visible = true;
@@ -34,26 +28,14 @@ export class Icosahedron extends Shape {
             this.entity.position.set(-3,0,0);
             this._wireframe.visible = true;
             this._outerLayers.visible = true;
+
+            this.mainMenu();
         })
     }
 
-    openAni = () => {
-        this._basicShape.visible = false;
-        this.entity.remove(this._wireframe);
-        this._wireframe = this._createWireframe("purple", .2, 1);
-        this.entity.add(this._wireframe);
-
-        this._outerLayers.add(this._copyFaces("blue", .15, .6));
-
-        this.animate = () => {
-            this._wireframe.rotation.x += .01;
-            this._wireframe.rotation.y += .01;
-            this._outerLayers.rotation.z -= .02;
-            this._outerLayers.rotation.x -= .02;
-
-            this.entity.rotation.y -= .01;
-            this.entity.rotation.z += .01;
-        }
+    mainMenu = () => {
+        this.entity.position.set(-3,0,0);
+        super.mainMenu();
     }
     
     

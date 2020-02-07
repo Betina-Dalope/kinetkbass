@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Kinetk from './Kinetk';
-import Scene from './DetailedLanternTestScene';
+import Scene from './Animation';
 
 
 class App extends Component {

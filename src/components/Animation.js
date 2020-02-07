@@ -29,7 +29,7 @@ class Animation extends Component {
             bloomStrength: 1.5,
             bloomThreshold: 0.1,
             bloomRadius: 1,
-            animation: 'openAni'
+            animation: 'goTo'
         },
         shapes: [
             { title: 'Cube', constructor: Cube },
@@ -139,6 +139,7 @@ class Animation extends Component {
         this._forEachShape((shape) => {
             shape.object.initAni();
         })
+
     }
 
     mainMenu = () => {
@@ -159,6 +160,13 @@ class Animation extends Component {
         })
     }
 
+    goTo = () => {
+        TweenMax.killAll();
+        this.camera.goTo( this.state.shapes[1].object );
+        this.light.openAni();
+        this.state.shapes[1].object.goTo();
+    }
+
     render() {
 
         this[this.state.params.animation]();
@@ -177,7 +185,7 @@ class Animation extends Component {
                         <DatNumber path='bloomRadius' min={0.0} max={1.0} step={0.01}/>
                     </DatFolder>
                     <DatFolder title="Animation">
-                        <DatSelect path='animation' options={ ['initAni', 'mainMenu', 'openAni'] }></DatSelect>
+                        <DatSelect path='animation' options={ ['initAni', 'mainMenu', 'openAni', 'goTo'] }></DatSelect>
                         <DatButton label='Replay' onClick={ this[this.state.params.animation] }></DatButton>
                     </DatFolder>
                 </DatGui>

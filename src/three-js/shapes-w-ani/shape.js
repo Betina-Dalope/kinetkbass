@@ -5,28 +5,38 @@ import { WireframeGeometry2 } from 'three/examples/jsm/lines/WireframeGeometry2.
 
 class Shape {
 
-    constructor() {
+    constructor(geometry, colors) {
 
-        this._basicShape = null;
-        this._innerLight = this._constructInnerLight();
+        var material_outer = new THREE.MeshPhongMaterial({color: "black", side: THREE.FrontSide })
+        var material_inner = new THREE.MeshPhongMaterial({color: colors.primary, side: THREE.BackSide })
+
+        this._basicShape = new THREE.Mesh( geometry, material_outer );
+        this._basicShape.receiveShadow = true;
+        this._basicShape.add( new THREE.Mesh( geometry, material_inner ) )
+
+        this._innerLight = this._constructInnerLight(colors.secondary);
         this._outerLayers = new THREE.Group(); // the faces of the shape that open
+        this._wireframe = this._createWireframe(colors.primary);
 
         this.entity = new THREE.Group(); // use this to reference in react components
+        this.entity.add(this._basicShape);
         this.entity.add(this._innerLight);
         this.entity.add(this._outerLayers);
+        this.entity.add(this._wireframe);
 
     }
 
-    _constructInnerLight = () => {
+    _constructInnerLight = (color) => {
         //visual orb simulates a glow with the bloom effect, but the actual light is hidden inside it
         // the material is transparent but full opacity to allow light to pass through
-        var geometry = new THREE.SphereGeometry(.15);
-        var material = new THREE.MeshBasicMaterial({color: "white", transparent: true, opacity: 1});
+        var geometry = new THREE.SphereGeometry(.025);
+        var material = new THREE.MeshBasicMaterial({color: color, transparent: true, opacity: 1});
         var visualOrb = new THREE.Mesh(geometry, material);
 
-        var light = new THREE.PointLight( "white", 1, 100 );
+        var light = new THREE.PointLight( color , 1, 1 );
         light.position.set( 0, 0, 0 );
-        //visualOrb.add( light );
+        light.castShadow = true;
+        visualOrb.add( light );
 
         return visualOrb;
     }
@@ -41,24 +51,105 @@ class Shape {
 
     // default init animation - gets overriden by children
     initAni = () => {
+        this._reset();
+        this.animate = () => {};
+
         this.entity.visible = false;
+
         TweenMax.delayedCall(5, () => {
-            this.entity.visible = true; 
+            this.mainMenu();
         })
     }
 
-    mainMenu = () => {
-        this.entity.visible = true;
+    mainMenu() {
+        this._reset();
+
+        this.animate = () => {}
+
+        this._wireframe.traverse( function(child) {
+            if (child.userData.faceNormal) {
+                child.position.set( 0, 0, 0);
+            } 
+        });
     }
 
-    openAni = () => {
+    openAni() {
+        this._reset();
+        this._basicShape.visible = false;
+
+        // 1. increase position of all faces of wireframe so shape opens up
+        var distance_from_shape = .20;
+
+        this._wireframe.traverse( function(child) {
+            if (child.userData.faceNormal) {
+
+                TweenMax.to( child.position, 2, {
+                    x: child.userData.faceNormal[0] * distance_from_shape,
+                    y: child.userData.faceNormal[1] * distance_from_shape,
+                    z: child.userData.faceNormal[2] * distance_from_shape,
+                    yoyo: true,
+                    repeat: -1
+                })
+            } 
+        });
+
+        var distance_from_shape = .5;
+        this._outerLayers.traverse( function(child) {
+            if (child.userData.faceNormal) {
+
+                TweenMax.to( child.position, 2, {
+                    x: child.userData.faceNormal[0] * distance_from_shape,
+                    y: child.userData.faceNormal[1] * distance_from_shape,
+                    z: child.userData.faceNormal[2] * distance_from_shape,
+                    yoyo: true,
+                    repeat: -1
+                })
+            } 
+        });
+
+ 
+        this.animate = () => {
+            this._wireframe.rotation.x += .01;
+            this._wireframe.rotation.y += .01;
+            this._outerLayers.rotation.z -= .02;
+            this._outerLayers.rotation.x -= .02;
+
+            this.entity.rotation.y -= .02;
+            this.entity.rotation.z += .02;
+        }
 
     }
 
     goTo = () => {
-        // 1. go to middle of shape
-        // 2. rotate
-        // 3. show content and text
+
+        this._reset();
+        this._basicShape.scale.set(1.8, 1.8, 1.8);
+
+        //this._innerLight.material.opacity = 0;
+        this._wireframe.scale.set(.3,.3,.3)
+
+        this.animate = () => {
+            this._wireframe.rotation.x += .001;
+            this._wireframe.rotation.y += .001;
+            this._outerLayers.rotation.z -= .02;
+            this._outerLayers.rotation.x -= .02;
+
+            this.entity.rotation.y -= .002;
+            this.entity.rotation.z += .002;
+        }
+    }
+
+    _reset = () => {
+        this._basicShape.visible = true;
+        this._basicShape.scale.set(1, 1, 1);
+        this._basicShape.rotation.set(0,0,0);
+
+        this._wireframe.visible = true;
+        this._wireframe.scale.set(1,1,1);
+        this._wireframe.rotation.set(0,0,0);
+
+        this.entity.visible = true;
+        this.entity.rotation.set(0,0,0);
     }
 
 
@@ -95,6 +186,9 @@ class Shape {
 
             face.scale.set(SCALE, SCALE, SCALE);
 
+            // 2. set user data so you can calculate open position
+            face.userData.faceNormal = geometry.faces[i].normal.toArray();
+
             face.position.set(
                 geometry.faces[i].normal.x * DISTANCE_FROM_SHAPE,
                 geometry.faces[i].normal.y * DISTANCE_FROM_SHAPE,
@@ -104,7 +198,8 @@ class Shape {
 
 
         }
-        
+
+        allFaces.castShadow = true;
         return allFaces;        
     }
 
@@ -140,6 +235,8 @@ class Shape {
             var customMaterial = new THREE.MeshPhongMaterial( {color: COLOR, side: THREE.DoubleSide} );
 
             var plane = new THREE.Mesh( customGeometry , customMaterial);
+
+            plane.userData.faceNormal = geometry.faces[i].normal.toArray();
 
             plane.position.set(
                 geometry.faces[i].normal.x * DISTANCE_FROM_SHAPE,

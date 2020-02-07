@@ -52,6 +52,11 @@ class Camera {
         this._pivotPoint.rotation.set(0,4.6,0);       
     }
 
+    goTo = (shape) => {
+
+        this.entity.position.set( shape.entity.position.x -1.25, shape.entity.position.y, shape.entity.position.z );
+    }
+
 }
 
 export default Camera;
