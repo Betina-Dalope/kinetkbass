@@ -32,7 +32,7 @@ class Kinetk extends Component {
             .to( this.refs.k2, 1.6, {rotationY: 180, transformOrigin:"right", x: -27, ease: Expo.easeOut}, "grow")
             .to( this.refs.component, 2, {scale: 1.5, transformOrigin:"bottom", delay: .2}, "grow")
             
-            .add( "shrink", "-=.2")
+            .add( "shrink", "-=.6")
            
             .to(this.refs.component, .25, { scale: 1, ease: Expo.easeOut }, "shrink")
             .from( this.refs.component, 1, { left: "50%", top: "50%", x: "-50%", y: "-50%", ease: Expo.easeOut}, "shrink")

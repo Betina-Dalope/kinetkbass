@@ -33,7 +33,7 @@ class Shape {
         var material = new THREE.MeshBasicMaterial({color: color, transparent: true, opacity: 1});
         var visualOrb = new THREE.Mesh(geometry, material);
 
-        var light = new THREE.PointLight( color , 1, 1 );
+        var light = new THREE.PointLight( color , 1, 1, 1 );
         light.position.set( 0, 0, 0 );
         light.castShadow = true;
         visualOrb.add( light );
@@ -159,29 +159,32 @@ class Shape {
         var geometry = this._basicShape.geometry;
         for(var i in geometry.faces) {
 
+
+
             var face = new THREE.Group();
 
-            // var path = new THREE.CurvePath();
-            // path.add( new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].b] ) )
-            // path.add( new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].c] ) )
-            // path.add( new THREE.LineCurve3( geometry.vertices[geometry.faces[i].b], geometry.vertices[geometry.faces[i].c] ) )
-            //path.autoClose = true;
             var path = new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].b] );
             var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .02, 3, false );
             var material = new THREE.MeshPhongMaterial( { color: COLOR } );
             var mesh = new THREE.Mesh( tubegeometry, material );
+            mesh.receiveShadow = true;
+            mesh.castShadow = true;
             face.add( mesh );
 
             var path = new THREE.LineCurve3( geometry.vertices[geometry.faces[i].b], geometry.vertices[geometry.faces[i].c] );
             var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .02, 3, false );
             var material = new THREE.MeshPhongMaterial( { color: COLOR } );
             var mesh = new THREE.Mesh( tubegeometry, material );
+            mesh.receiveShadow = true;
+            mesh.castShadow = true;
             face.add( mesh );
 
             var path = new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].c] );
             var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .02, 3, false );
             var material = new THREE.MeshPhongMaterial( { color: COLOR } );
             var mesh = new THREE.Mesh( tubegeometry, material );
+            mesh.receiveShadow = true;
+            mesh.castShadow = true;
             face.add( mesh );
 
             face.scale.set(SCALE, SCALE, SCALE);
@@ -199,7 +202,7 @@ class Shape {
 
         }
 
-        allFaces.castShadow = true;
+        allFaces.castShadow = true; // does this even work?
         return allFaces;        
     }
 

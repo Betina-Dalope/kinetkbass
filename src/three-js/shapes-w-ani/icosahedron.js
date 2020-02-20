@@ -24,10 +24,11 @@ export class Icosahedron extends Shape {
         this._wireframe.visible = false;
         this._outerLayers.visible = false;
         this._basicShape.visible = true;
+        this._innerLight.visible = false;
         TweenMax.delayedCall(5, () => {
             this.entity.position.set(-3,0,0);
-            this._wireframe.visible = true;
-            this._outerLayers.visible = true;
+            // this._wireframe.visible = true;
+            // this._outerLayers.visible = true;
 
             this.mainMenu();
         })

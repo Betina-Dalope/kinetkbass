@@ -13,18 +13,19 @@ export class Cube extends Shape {
 
         //change inner light to a cube
         this._innerLight.geometry = geometry;
+        this._innerLight.children[0].distance = 15;
         //this._innerLight.geometry = new THREE.SphereGeometry(1, 4, 4, 0, 6.3, 5.5, 6.3);
 
         // outer layers
-        // var geometry = new THREE.BoxGeometry( .6, .6, .6 );
-        // var material = new THREE.MeshPhongMaterial({color: "blue" , side: THREE.DoubleSide});
-        // this._outerLayers.add(new THREE.Mesh( geometry, material ));
-        // var geometry = new THREE.IcosahedronGeometry( .3 );
-        // var material = new THREE.MeshPhongMaterial({color: "purple" , side: THREE.DoubleSide});
-        // this._outerLayers.add(new THREE.Mesh( geometry, material ));
-        // var geometry = new THREE.IcosahedronGeometry( .4 );
-        // var material = new THREE.MeshPhongMaterial({color: "green", side: THREE.DoubleSide });
-        // this._outerLayers.add(new THREE.Mesh( geometry, material ));
+        var geometry = new THREE.BoxGeometry( .5, .5, .5 );
+        var material = new THREE.MeshPhongMaterial({color: "yellow" , side: THREE.DoubleSide});
+        this._outerLayers.add(new THREE.Mesh( geometry, material ));
+        var geometry = new THREE.IcosahedronGeometry( .2 );
+        var material = new THREE.MeshPhongMaterial({color: "black" , side: THREE.DoubleSide});
+        this._outerLayers.add(new THREE.Mesh( geometry, material ));
+        var geometry = new THREE.BoxGeometry( .2, .8 , .8 );
+        var material = new THREE.MeshPhongMaterial({color: "purple", side: THREE.DoubleSide });
+        this._outerLayers.add(new THREE.Mesh( geometry, material ));
 
 
 
@@ -50,21 +51,26 @@ export class Cube extends Shape {
         this._innerLight.rotation.z += .5;
         this.animate = () => {
             this._innerLight.rotation.x += .5;
+            this._outerLayers.rotation.y += 0.025;
+            this._outerLayers.rotation.z += 0.01;
         }
 
         TweenMax.delayedCall(4, () => {
-            this._wireframe.visible = true;
+            //this._wireframe.visible = true;
         });
 
         // 3. stop spinning and set to normal upright position and size
-        TweenMax.delayedCall(5, () => {
+        TweenMax.delayedCall(6.5, () => {
             this._innerLight.rotation.y = 0;
             this._innerLight.rotation.z = 0;
-            this._innerLight.rotation.x= 0;
-            this.animate = function() {};
+            this._innerLight.rotation.x = 0;
+            this.animate = function() {
+                this._outerLayers.rotation.y += 0.025;
+                this._outerLayers.rotation.z += 0.01;
+            };
             //this._wireframe.visible = true;
 
-            this._innerLight.material.color = originalColor;
+            //this._innerLight.material.color = originalColor;
         })
     }
 

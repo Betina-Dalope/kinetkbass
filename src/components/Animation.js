@@ -177,7 +177,7 @@ class Animation extends Component {
 
             <div ref="component">
 
-                <DatGui data={params} onUpdate={this.handleUpdate}>
+                {/* <DatGui data={params} onUpdate={this.handleUpdate}>
                     <DatFolder title="Bloom">
                         <DatNumber path='exposure' min={0.1} max={2.0} step={0.1}/>
                         <DatNumber path='bloomStrength'  min={0.0} max={1.0} step={0.1}/>
@@ -188,7 +188,7 @@ class Animation extends Component {
                         <DatSelect path='animation' options={ ['initAni', 'mainMenu', 'openAni', 'goTo'] }></DatSelect>
                         <DatButton label='Replay' onClick={ this[this.state.params.animation] }></DatButton>
                     </DatFolder>
-                </DatGui>
+                </DatGui> */}
             </div>
 
         );

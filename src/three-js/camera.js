@@ -28,17 +28,13 @@ class Camera {
 
         new TimelineLite()
             .to(this.entity.position, 3, {x: -7, ease: Expo.easeIn})
-            .to(this.entity.position, 5, {x: -1, ease: Expo.easeOut })
-
-            // this is to look at target while moving camera
-            // .to(this.entity.position, 5, {x: -10, z: 5, onUpdate: () => {
-            //     _this.entity.lookAt(0,0,0);
-            // }})
+            .to(this.entity.position, 5, {x: -1.1, ease: Expo.easeOut })
+            .to(this._pivotPoint.rotation, 2, {y: -Math.PI / 2, delay: -1 })
             .add("spin out", "-=1")
-            .set(this._pivotPoint.rotation, {y: -2}, "spin out")
-            .to(this.entity.position, 4, {x: -15 }, "spin out")
-            .to(this._pivotPoint.rotation, 10, {y: 4.6}, "spin out")
-            .to(this.entity.position, 5, {z: 4.5, delay: -5, ease: Expo.easeOut})
+            
+            .to(this.entity.position, 4, {x: -13.5 }, "spin out")
+            .to(this._pivotPoint.rotation, 8, {y: 4.6 }, "spin out")
+            .to(this.entity.position, 4, {z: 4.5, delay: -4})
             
     }
 
