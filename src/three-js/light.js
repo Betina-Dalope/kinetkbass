@@ -27,7 +27,7 @@ class Light {
         // this.ambientLight.intensity = 1; 
         
         this.ambientLight.color = new THREE.Color(0x404040);
-        this.ambientLight.intensity = .2; 
+        this.ambientLight.intensity = .5; 
     }
 
 

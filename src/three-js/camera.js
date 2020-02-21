@@ -4,7 +4,7 @@ import { TimelineLite, Expo } from 'gsap';
 class Camera {
 
     constructor(scene) {
-        this.entity = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 100);
+        this.entity = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 100);
 
         this.entity.position.set(-5, 0, 0);
 
@@ -49,7 +49,6 @@ class Camera {
     }
 
     goTo = (shape) => {
-
         this.entity.position.set( shape.entity.position.x -1.25, shape.entity.position.y, shape.entity.position.z );
     }
 

@@ -1,22 +1,34 @@
 import * as THREE from 'three';
-import { TweenMax } from 'gsap';
+import { TweenMax, Expo } from 'gsap';
 import { Wireframe } from 'three/examples/jsm/lines/Wireframe.js';
 import { WireframeGeometry2 } from 'three/examples/jsm/lines/WireframeGeometry2.js';
+import { Color } from 'three';
 
 class Shape {
 
-    constructor(geometry, colors) {
+    constructor(geometry, chakra_color, element_color) {
+
+        this._chakraColor = chakra_color;
+        this._elementColor = element_color;
 
         var material_outer = new THREE.MeshPhongMaterial({color: "black", side: THREE.FrontSide })
-        var material_inner = new THREE.MeshPhongMaterial({color: colors.primary, side: THREE.BackSide })
+       // var material_inner = new THREE.MeshPhongMaterial({color: this._elementColor, side: THREE.BackSide })
 
-        this._basicShape = new THREE.Mesh( geometry, material_outer );
+        var material_inner = new THREE.MeshPhongMaterial( {
+            //color: 0xa0adaf,
+            color: this._elementColor,
+            shininess: 10,
+            specular: 0x111111,
+            side: THREE.BackSide
+        } );
+
+        this._basicShape = new THREE.Mesh( geometry, material_inner );
         this._basicShape.receiveShadow = true;
-        this._basicShape.add( new THREE.Mesh( geometry, material_inner ) )
+        //this._basicShape.add( new THREE.Mesh( geometry, material_outer ) )
 
-        this._innerLight = this._constructInnerLight(colors.secondary);
+        this._innerLight = this._constructInnerLight(this._chakraColor);
         this._outerLayers = new THREE.Group(); // the faces of the shape that open
-        this._wireframe = this._createWireframe(colors.primary);
+        this._wireframe = this._createWireframe( 'white' );
 
         this.entity = new THREE.Group(); // use this to reference in react components
         this.entity.add(this._basicShape);
@@ -29,16 +41,44 @@ class Shape {
     _constructInnerLight = (color) => {
         //visual orb simulates a glow with the bloom effect, but the actual light is hidden inside it
         // the material is transparent but full opacity to allow light to pass through
-        var geometry = new THREE.SphereGeometry(.025);
-        var material = new THREE.MeshBasicMaterial({color: color, transparent: true, opacity: 1});
-        var visualOrb = new THREE.Mesh(geometry, material);
+        // var geometry = new THREE.SphereGeometry(.025);
+        // var material = new THREE.MeshBasicMaterial({color: color, transparent: true, opacity: 1});
+        // var visualOrb = new THREE.Mesh(geometry, material);
 
-        var light = new THREE.PointLight( color , 1, 1, 1 );
-        light.position.set( 0, 0, 0 );
-        light.castShadow = true;
-        visualOrb.add( light );
+        // var light = new THREE.PointLight( color , 1 , 10, 1 );
+        // light.position.set( 0, 0, 0 );
+        // light.castShadow = true;
+        // light.add( visualOrb );
 
-        return visualOrb;
+        //return light;
+
+        var intensity = 20; // if shadow doesn't show up try upping intesnity and make sure renderer has a basic shadow parameter
+
+        var pointLight = new THREE.PointLight( color, intensity, 20 );
+        pointLight.castShadow = true;
+        pointLight.shadow.camera.near = .1;
+        pointLight.shadow.camera.far = 60;
+        pointLight.shadow.bias = - 0.005; // reduces self-shadowing on double-sided objects
+
+        // var pointLight2 = new THREE.PointLight( this._elementColor, 10, 20 );
+        // pointLight2.castShadow = true;
+        // pointLight2.shadow.camera.near = .1;
+        // pointLight2.shadow.camera.far = 60;
+        // pointLight2.shadow.bias = - 0.005; // reduces self-shadowing on double-sided objects
+
+        // pointLight.add( pointLight2 );
+
+        // helper sphere to see where the light is
+        var geometry = new THREE.SphereBufferGeometry( 0.1, 12, 6 );
+        var material = new THREE.MeshBasicMaterial( { color: color } );
+        material.color.multiplyScalar( intensity );
+        var sphere = new THREE.Mesh( geometry, material );
+        pointLight.add( sphere );
+
+
+        return pointLight;
+
+        
     }
 
     // cycle through inner light colors
@@ -123,19 +163,52 @@ class Shape {
     goTo = () => {
 
         this._reset();
-        this._basicShape.scale.set(1.8, 1.8, 1.8);
+        this._basicShape.scale.set(1, 1, 1);
 
         //this._innerLight.material.opacity = 0;
         this._wireframe.scale.set(.3,.3,.3)
 
+        TweenMax.to( this._innerLight, 4, { intensity: 5, yoyo: true, repeat: -1});
+
+        
+        var distance_from_shape = 1.5;
+
+        this._wireframe.traverse( function(child) {
+
+            // 1. increase position of all faces of wireframe so shape opens up
+            if (child.userData.faceNormal) {
+
+                TweenMax.to( child.position, 2, {
+                    x: child.userData.faceNormal[0] * distance_from_shape,
+                    y: child.userData.faceNormal[1] * distance_from_shape,
+                    z: child.userData.faceNormal[2] * distance_from_shape,
+                    yoyo: true,
+                    repeat: -1,
+                    repeatDelay: 4
+                })
+            } 
+
+            // 2. modulate opacity
+            // if (child.material) {
+            //     child.material.transparent = true;
+            //     TweenMax.to( child.material, 4, {
+            //         opacity: 0,
+            //         yoyo: true,
+            //         repeat: -1
+            //     } )
+            // }
+        });
+
+
         this.animate = () => {
-            this._wireframe.rotation.x += .001;
-            this._wireframe.rotation.y += .001;
+            this._wireframe.rotation.x += .002;
+            this._wireframe.rotation.y += .002;
+            this._wireframe.rotation.z -= .002;
             this._outerLayers.rotation.z -= .02;
             this._outerLayers.rotation.x -= .02;
 
-            this.entity.rotation.y -= .002;
-            this.entity.rotation.z += .002;
+            this._basicShape.rotation.y -= .002;
+            this._basicShape.rotation.z += .002;
         }
     }
 
@@ -159,29 +232,28 @@ class Shape {
         var geometry = this._basicShape.geometry;
         for(var i in geometry.faces) {
 
-
-
             var face = new THREE.Group();
 
             var path = new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].b] );
-            var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .02, 3, false );
-            var material = new THREE.MeshPhongMaterial( { color: COLOR } );
+            var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .1, 5, false );
+            var material = new THREE.MeshLambertMaterial( { color: COLOR, fog: true, emissiveIntensity: .2, emissive: new THREE.Color('white') } );
+            //var material = new THREE.MeshLambertMaterial( { color: COLOR, fog: true } );
+
             var mesh = new THREE.Mesh( tubegeometry, material );
             mesh.receiveShadow = true;
             mesh.castShadow = true;
             face.add( mesh );
 
             var path = new THREE.LineCurve3( geometry.vertices[geometry.faces[i].b], geometry.vertices[geometry.faces[i].c] );
-            var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .02, 3, false );
-            var material = new THREE.MeshPhongMaterial( { color: COLOR } );
+            var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .1, 5, false );
+
             var mesh = new THREE.Mesh( tubegeometry, material );
             mesh.receiveShadow = true;
             mesh.castShadow = true;
             face.add( mesh );
 
             var path = new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].c] );
-            var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .02, 3, false );
-            var material = new THREE.MeshPhongMaterial( { color: COLOR } );
+            var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .1, 5, false );
             var mesh = new THREE.Mesh( tubegeometry, material );
             mesh.receiveShadow = true;
             mesh.castShadow = true;
@@ -202,7 +274,7 @@ class Shape {
 
         }
 
-        allFaces.castShadow = true; // does this even work?
+        //allFaces.castShadow = true; // does this even work?
         return allFaces;        
     }
 

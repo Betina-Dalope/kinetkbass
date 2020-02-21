@@ -15,6 +15,7 @@ import Cube from '../three-js/shapes-w-ani/cube';
 import Icosahedron from '../three-js/shapes-w-ani/icosahedron';
 import Tetrahedron from '../three-js/shapes-w-ani/tetrahedron';
 import Octahedron from '../three-js/shapes-w-ani/octahedron';
+import Shape from '../three-js/shapes-w-ani/shape';
 
 import Camera from '../three-js/camera';
 import Light from '../three-js/light';
@@ -31,12 +32,9 @@ class Animation extends Component {
             bloomRadius: 1,
             animation: 'goTo'
         },
-        shapes: [
-            { title: 'Cube', constructor: Cube },
-            { title: 'Icosahedron', constructor: Icosahedron },
-            { title: 'Octahedron', constructor: Octahedron },
-            { title: 'Tetrahedron', constructor: Tetrahedron },
-        ]
+        shapes: {
+            'Icosahedron': { chakra_color: 'orange', element_color: 'blue', geometry: new THREE.IcosahedronGeometry( 5 ) }
+        }
     }
 
     constructor(props) {
@@ -49,11 +47,14 @@ class Animation extends Component {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.toneMapping = THREE.ReinhardToneMapping;
-        this.renderer.toneMappingExposure = Math.pow(this.state.params.exposure, 4.0); // modified - exposure only works on the render not the bloom pass
+        //this.renderer.toneMapping = THREE.ReinhardToneMapping;
+        //this.renderer.toneMappingExposure = Math.pow(this.state.params.exposure, 4.0); // modified - exposure only works on the render not the bloom pass
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.BasicShadowMap;
 
         // 2. set up camera
         scene = new THREE.Scene();
+        //scene.fog = new THREE.Fog( 'white', 0, 20)
         this.camera = new Camera(scene, this.renderer);
 
 
@@ -77,16 +78,29 @@ class Animation extends Component {
 
         
         this.composer.addPass(renderScene);
-        this.composer.addPass(this.bloomPass);
+        //this.composer.addPass(this.bloomPass);
 
-        this._forEachShape((shape, index) => {
-            var constructor = shape.constructor;
-            var object = new constructor();
+        // this._forEachShape((shape, index) => {
+        //     var constructor = shape.constructor;
+        //     var object = new constructor();
 
-            scene.add(object.entity);
-            shape.object = object; // effects the state
-        })
+        //     scene.add(object.entity);
+        //     shape.object = object; // effects the state
+        // })
 
+        // 4. create elements
+        //var positionX = 0;
+        for (var i in this.state.shapes) {
+            var chakra_color = this.state.shapes[i].chakra_color;
+            var element_color = this.state.shapes[i].element_color;
+            var geometry = this.state.shapes[i].geometry;
+
+            // add object to state
+            this.state.shapes[i].object = new Shape(geometry, chakra_color, element_color);
+            this.state.shapes[i].object.entity.position.set( 0, 0, 0);
+            scene.add( this.state.shapes[i].object.entity );
+
+        }
 
         window.onresize = () => {
             var width = window.innerWidth;
@@ -162,9 +176,9 @@ class Animation extends Component {
 
     goTo = () => {
         TweenMax.killAll();
-        this.camera.goTo( this.state.shapes[1].object );
+        this.camera.goTo( this.state.shapes['Icosahedron'].object );
         this.light.openAni();
-        this.state.shapes[1].object.goTo();
+        this.state.shapes['Icosahedron'].object.goTo();
     }
 
     render() {
