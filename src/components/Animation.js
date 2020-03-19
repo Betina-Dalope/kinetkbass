@@ -30,10 +30,15 @@ class Animation extends Component {
             bloomStrength: 1.5,
             bloomThreshold: 0.1,
             bloomRadius: 1,
-            animation: 'goTo'
+            animation: 'mainMenu',
+            activeShape: 'Octahedron'
         },
         shapes: {
-            'Icosahedron': { chakra_color: 'orange', element_color: 'blue', geometry: new THREE.IcosahedronGeometry( 5 ) }
+            'Cube': { chakra_color: 'red', element_color: 'green', geometry: new THREE.BoxBufferGeometry( 6, 6, 6 ) },
+            'Icosahedron': { chakra_color: 'orange', element_color: 'blue', geometry: new THREE.IcosahedronBufferGeometry( 5 ) },
+            'Octahedron': { chakra_color: 'green', element_color: 'indigo', geometry: new THREE.OctahedronBufferGeometry( 4.5 ) },
+            'Tetrahedron': { chakra_color: 'blue', element_color: 'red', geometry: new THREE.TetrahedronBufferGeometry( 6.5 ) },
+
         }
     }
 
@@ -61,10 +66,10 @@ class Animation extends Component {
         this.light = new Light(scene, this.camera.entity);
 
         //Use Orbit controls to maintain a positive y (do not allow going underneath the scene)
-        var controls = new OrbitControls(this.camera.entity, this.renderer.domElement);
-        controls.maxPolarAngle = Math.PI * 0.5;
-        controls.minDistance = 0;
-        controls.maxDistance = 20;
+        this.controls = new OrbitControls(this.camera.entity, this.renderer.domElement);
+        this.controls.maxPolarAngle = Math.PI * 0.5;
+        this.controls.minDistance = 0;
+        this.controls.maxDistance = 100;
 
 
         // 3. set up bloompass
@@ -80,25 +85,30 @@ class Animation extends Component {
         this.composer.addPass(renderScene);
         //this.composer.addPass(this.bloomPass);
 
-        // this._forEachShape((shape, index) => {
-        //     var constructor = shape.constructor;
-        //     var object = new constructor();
-
-        //     scene.add(object.entity);
-        //     shape.object = object; // effects the state
-        // })
 
         // 4. create elements
-        //var positionX = 0;
+        var distance_between_shapes = 20;
+        var positionX = ((Object.keys(this.state.shapes).length * distance_between_shapes) / -2) - (distance_between_shapes / 2);
         for (var i in this.state.shapes) {
             var chakra_color = this.state.shapes[i].chakra_color;
             var element_color = this.state.shapes[i].element_color;
             var geometry = this.state.shapes[i].geometry;
 
+            // calculate position
+            var positionX = positionX + distance_between_shapes;
+
             // add object to state
             this.state.shapes[i].object = new Shape(geometry, chakra_color, element_color);
-            this.state.shapes[i].object.entity.position.set( 0, 0, 0);
-            scene.add( this.state.shapes[i].object.entity );
+            this.state.shapes[i].object.entity.position.set( positionX, 0, 0);
+            //scene.add( this.state.shapes[i].object.entity );
+
+            console.log(positionX + 50)
+
+            var entity = this.state.shapes[i].object.entity;
+            setTimeout(function(entity) {
+                scene.add( entity );
+            }, positionX + 50, entity)
+
 
         }
 
@@ -139,10 +149,10 @@ class Animation extends Component {
             params: { ...prevState.params, ...newParams }
         }));
 
-        this.bloomPass.threshold = newParams.bloomThreshold;
-        this.bloomPass.strength = newParams.bloomStrength;
-        this.bloomPass.radius = newParams.bloomRadius;
-        this.renderer.toneMappingExposure = Math.pow(newParams.exposure, 4.0);
+        // this.bloomPass.threshold = newParams.bloomThreshold;
+        // this.bloomPass.strength = newParams.bloomStrength;
+        // this.bloomPass.radius = newParams.bloomRadius;
+        // this.renderer.toneMappingExposure = Math.pow(newParams.exposure, 4.0);
     }
 
     initAni = () => {
@@ -163,6 +173,9 @@ class Animation extends Component {
         this._forEachShape((shape) => {
             shape.object.mainMenu();
         })
+
+        this.controls.target.set( 0, 0, 0 );
+        this.controls.update();
     }
 
     openAni = () => {
@@ -175,16 +188,30 @@ class Animation extends Component {
     }
 
     goTo = () => {
+
         TweenMax.killAll();
-        this.camera.goTo( this.state.shapes['Icosahedron'].object );
+
+        this._forEachShape((shape) => {
+            shape.object.mainMenu();
+        })
+
+        this.camera.goTo( this.state.shapes[ this.state.params.activeShape ].object );
         this.light.openAni();
-        this.state.shapes['Icosahedron'].object.goTo();
+        this.state.shapes[ this.state.params.activeShape ].object.goTo();
+
+        var position = this.state.shapes[ this.state.params.activeShape ].object.entity.position;
+
+        this.controls.target.set( position.x, position.y, position.z );
+        //this.controls.update();
     }
 
     render() {
 
         this[this.state.params.animation]();
         const { params } = this.state;
+
+        console.log(this.state.params.animation);
+        console.log(this.controls.target);
 
         return (
 
@@ -203,6 +230,14 @@ class Animation extends Component {
                         <DatButton label='Replay' onClick={ this[this.state.params.animation] }></DatButton>
                     </DatFolder>
                 </DatGui> */}
+
+                 <DatGui data={params} onUpdate={this.handleUpdate}>
+                    <DatSelect path='activeShape' options={ ['Cube', 'Icosahedron', 'Octahedron', 'Tetrahedron'] }></DatSelect>
+                    <DatFolder title="Animation">
+                        <DatSelect path='animation' options={ ['initAni', 'mainMenu', 'openAni', 'goTo'] }></DatSelect>
+                        <DatButton label='Replay' onClick={ this[this.state.params.animation] }></DatButton>
+                    </DatFolder>
+                </DatGui>            
             </div>
 
         );

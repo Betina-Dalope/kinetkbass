@@ -24,11 +24,12 @@ class Shape {
 
         this._basicShape = new THREE.Mesh( geometry, material_inner );
         this._basicShape.receiveShadow = true;
-        //this._basicShape.add( new THREE.Mesh( geometry, material_outer ) )
+        this._basicShape.add( new THREE.Mesh( geometry, material_outer ) )
 
         this._innerLight = this._constructInnerLight(this._chakraColor);
         this._outerLayers = new THREE.Group(); // the faces of the shape that open
         this._wireframe = this._createWireframe( 'white' );
+        //this._wireframe = new THREE.Group();
 
         this.entity = new THREE.Group(); // use this to reference in react components
         this.entity.add(this._basicShape);
@@ -52,21 +53,21 @@ class Shape {
 
         //return light;
 
-        var intensity = 20; // if shadow doesn't show up try upping intesnity and make sure renderer has a basic shadow parameter
+        var intensity = 25; // if shadow doesn't show up try upping intesnity and make sure renderer has a basic shadow parameter
 
-        var pointLight = new THREE.PointLight( color, intensity, 20 );
+        var pointLight = new THREE.PointLight( color, intensity, 10 );
         pointLight.castShadow = true;
         pointLight.shadow.camera.near = .1;
         pointLight.shadow.camera.far = 60;
         pointLight.shadow.bias = - 0.005; // reduces self-shadowing on double-sided objects
 
-        // var pointLight2 = new THREE.PointLight( this._elementColor, 10, 20 );
-        // pointLight2.castShadow = true;
-        // pointLight2.shadow.camera.near = .1;
-        // pointLight2.shadow.camera.far = 60;
-        // pointLight2.shadow.bias = - 0.005; // reduces self-shadowing on double-sided objects
+        var pointLight2 = new THREE.PointLight( this._elementColor, 1, 5 );
+        pointLight2.castShadow = true;
+        pointLight2.shadow.camera.near = .1;
+        pointLight2.shadow.camera.far = 60;
+        pointLight2.shadow.bias = - 0.005; // reduces self-shadowing on double-sided objects
 
-        // pointLight.add( pointLight2 );
+        pointLight.add( pointLight2 );
 
         // helper sphere to see where the light is
         var geometry = new THREE.SphereBufferGeometry( 0.1, 12, 6 );
@@ -118,7 +119,7 @@ class Shape {
         this._basicShape.visible = false;
 
         // 1. increase position of all faces of wireframe so shape opens up
-        var distance_from_shape = .20;
+        var distance_from_shape = 2;
 
         this._wireframe.traverse( function(child) {
             if (child.userData.faceNormal) {
@@ -133,7 +134,7 @@ class Shape {
             } 
         });
 
-        var distance_from_shape = .5;
+        var distance_from_shape = .2;
         this._outerLayers.traverse( function(child) {
             if (child.userData.faceNormal) {
 
@@ -163,10 +164,13 @@ class Shape {
     goTo = () => {
 
         this._reset();
-        this._basicShape.scale.set(1, 1, 1);
+        this._basicShape.scale.set(2, 2, 2);
+        this._basicShape.children[0].visible = false;
 
         //this._innerLight.material.opacity = 0;
-        this._wireframe.scale.set(.3,.3,.3)
+        this._wireframe.scale.set(1.2,1.2,1.2)
+
+        TweenMax.to( this._wireframe.scale, 20, { x: .2, y: .2, z: .2, yoyo: true, repeat: -1, ease: Expo.easeOut});
 
         TweenMax.to( this._innerLight, 4, { intensity: 5, yoyo: true, repeat: -1});
 
@@ -201,13 +205,13 @@ class Shape {
 
 
         this.animate = () => {
-            this._wireframe.rotation.x += .002;
-            this._wireframe.rotation.y += .002;
+            //this._wireframe.rotation.x += .002;
+            //this._wireframe.rotation.y += .002;
             this._wireframe.rotation.z -= .002;
             this._outerLayers.rotation.z -= .02;
-            this._outerLayers.rotation.x -= .02;
+            //this._outerLayers.rotation.x -= .02;
 
-            this._basicShape.rotation.y -= .002;
+            //this._basicShape.rotation.y -= .002;
             this._basicShape.rotation.z += .002;
         }
     }
@@ -229,7 +233,10 @@ class Shape {
     _createWireframe = (COLOR = 0x00ff00, DISTANCE_FROM_SHAPE = 0, SCALE = 1 ) => {
 
         var allFaces = new THREE.Group();
-        var geometry = this._basicShape.geometry;
+
+        //var geometry = this._basicShape.geometry;  // if _basicShape is Geometry
+        var geometry = new THREE.Geometry().fromBufferGeometry( this._basicShape.geometry ) // if _basicGeometry is bufferGeometry
+
         for(var i in geometry.faces) {
 
             var face = new THREE.Group();
@@ -240,7 +247,7 @@ class Shape {
             //var material = new THREE.MeshLambertMaterial( { color: COLOR, fog: true } );
 
             var mesh = new THREE.Mesh( tubegeometry, material );
-            mesh.receiveShadow = true;
+            //mesh.receiveShadow = true;
             mesh.castShadow = true;
             face.add( mesh );
 
@@ -248,14 +255,14 @@ class Shape {
             var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .1, 5, false );
 
             var mesh = new THREE.Mesh( tubegeometry, material );
-            mesh.receiveShadow = true;
+            //mesh.receiveShadow = true;
             mesh.castShadow = true;
             face.add( mesh );
 
             var path = new THREE.LineCurve3( geometry.vertices[geometry.faces[i].a], geometry.vertices[geometry.faces[i].c] );
             var tubegeometry = new THREE.TubeBufferGeometry( path, 1, .1, 5, false );
             var mesh = new THREE.Mesh( tubegeometry, material );
-            mesh.receiveShadow = true;
+            //mesh.receiveShadow = true;
             mesh.castShadow = true;
             face.add( mesh );
 
